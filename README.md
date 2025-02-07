@@ -9,7 +9,7 @@ Trabalho da Disciplina de Modelagem de Sistemas (DCC117)
 ## Stack
 
 - Python 3.8
-- PySimpleGUI
+- Tkinter
 - Biblioteca std de JSON do Python
 - PyInstaller (para criar executável d o sistema)
 
