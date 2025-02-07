@@ -80,3 +80,5 @@ OnPoint/
 ```
 
 > `__init__.py` é um arquivo vazio que indica ao Python que a pasta é um pacote.
+
+**⚠️ POR FAVOR NÃO DEEM PUSH NA MAIN, SÓ DÊ MERGE DA DEV IMPLEMENTADA E TESTADA**
