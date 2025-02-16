@@ -2,8 +2,8 @@ from datetime import datetime
 
 class Clock():
     def __init__(self):
-        self.entranceTime = datetime()
-        self.exitTime = datetime()
+        self.entranceTime: datetime = datetime()
+        self.exitTime: datetime = datetime()
 
     # OBS: Precisa implementar
 
