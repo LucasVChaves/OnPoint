@@ -5,7 +5,7 @@ from ..utils import State, Schedules
 import Clock
 
 class Empployee:
-    def __init__(self, user, PIN, name, salary, email, birth, phone, schedules):
+    def __init__(self, user, PIN, name, salary, email, birth, phone, schedules, status):
         self.user: str = user
         self.PIN: int = PIN
         self.name: str = name
@@ -17,6 +17,7 @@ class Empployee:
         self.schedules: Schedules = Schedules(schedules.getTimeIn(), schedules.getHourlyLoad(), schedules.getLunchTime(), schedules.getInitialVacation(), schedules.getFinishVacation()) # Object from Schedules
         self.clock: Clock = Clock()
         self.login: Login = Login()
+        self.status: str = status
 
     # Getters
 
@@ -46,8 +47,11 @@ class Empployee:
 
     def getSchedules(self):
         return self.schedules
-
-    # Setters
+    
+    def getStatus(self):
+        return self.status
+    
+      # Setters
 
     def setUser(self, user):
         self.user = user
@@ -75,6 +79,9 @@ class Empployee:
 
     def setSchedules(self, schedules):
         self.schedules = schedules
+
+    def setStatus(self, status):
+        self.status = status
         
 
 
