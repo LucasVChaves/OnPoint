@@ -1,5 +1,5 @@
 import json
-from ..models import Empployee, Admin, State, Roles
+from ..models import Employee, Admin, State, Roles
 from enum import Enum
 
 
