@@ -1,6 +1,7 @@
 import json
-from ..models import Empployee, Admin, State
+from ..models import Empployee, Admin, State, Roles
 from enum import Enum
+
 
 class Cadastre():
 
@@ -13,7 +14,7 @@ class Cadastre():
         except: (FileNotFoundError, json.JSONDecodeError)   #se der ruim com erro, talvez possa ser assim
         self.usuarios = []
 
-    def createEmployee(self, user: str, PIN: str, name: str, email: str, phone: str, address: str, cpf: str, rg: str, birthday: str, admission: str, resignation: str, salary: float, hourlyLoad: float, lunchTime: float, initialVacation: str, finishVacation: str, State: State):
+    def createUser(self, user: str, PIN: str, name: str, email: str, phone: str, address: str, cpf: str, rg: str, birthday: str, admission: str, resignation: str, salary: float, hourlyLoad: float, lunchTime: float, initialVacation: str, finishVacation: str, State: State, Role: Roles):
         #"add funcionario"
         if not(self.isValidUser(user) and self.isValidPIN(PIN) and self.isValidName(name) and self.isValidEmail(email) and self.isValidPhone(phone) and self.isValidAdress(address) and self.isValidCpf(cpf) and self.isValidRg(rg) and self.isValidBirthday(birthday) and self.isValidAdmission(admission) and self.isValidResigbation(resignation) and self.isValidSalary(salary) and self.isValidHourlyload(hourlyLoad) and self.isValidLunchtime(lunchTime) and self.isValidInitialvacation(initialVacation) and self.isValidFinishvacation(finishVacation)):
             return False #usuario invalido
@@ -34,34 +35,17 @@ class Cadastre():
             "lunchTime": lunchTime,
             "initialVacation": initialVacation,
             "finishVacation": finishVacation,
-            "status": State.value
+            "status": State.value,
+            "role": Role.value,
         }
         pass
 
     def createAdmin(self, user: str, PIN: str, name: str, email: str, phone: str, address: str, cpf: str, rg: str, birthday: str, admission: str, resignation: str, salary: float, hourlyLoad: float, lunchTime: float, initialVacation: str, finishVacation: str, State: State):
         #"add gerente"
-        if not(self.isValidUser(user) and self.isValidPIN(PIN) and self.isValidName(name) and self.isValidEmail(email) and self.isValidPhone(phone) and self.isValidAdress(address) and self.isValidCpf(cpf) and self.isValidRg(rg) and self.isValidBirthday(birthday) and self.isValidAdmission(admission) and self.isValidResigbation(resignation) and self.isValidSalary(salary) and self.isValidHourlyload(hourlyLoad) and self.isValidLunchtime(lunchTime) and self.isValidInitialvacation(initialVacation) and self.isValidFinishvacation(finishVacation)):
-            return False #usuario invalido
-        new_user = {
-            "user": user,
-            "PIN": PIN,
-            "name": name,
-            "email": email,
-            "phone": phone,
-            "address": address,
-            "cpf": cpf,
-            "rg": rg,
-            "birthday": birthday,
-            "admission": admission,
-            "resignation": resignation,
-            "salary": salary,
-            "hourlyLoad": hourlyLoad,
-            "lunchTime": lunchTime,
-            "initialVacation": initialVacation,
-            "finishVacation": finishVacation,
-            "status": State.value
-        }
+
         pass
+
+
 
     def isValidUser(self, user:str) -> bool:
         return isinstance(user, str) and not any(u["User"] == user for u in self.usuarios) and len(user) > 0
