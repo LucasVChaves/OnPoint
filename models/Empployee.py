@@ -6,17 +6,17 @@ import Clock
 
 class Empployee:
     def __init__(self, user, PIN, name, salary, email, birth, phone, schedules):
-        self.user = user
-        self.PIN = PIN
-        self.name = name
-        self.salary = salary
-        self.email = email
-        self.birth = birth
-        self.phone = phone
-        self.state = State() # Objetc from State
-        self.schedules = schedules # Object from Schedules
-        self.clock = Clock()
-        self.login = Login()
+        self.user: str = user
+        self.PIN: int = PIN
+        self.name: str = name
+        self.salary: float = salary
+        self.email: str = email
+        self.birth: datetime = birth
+        self.phone: int = phone
+        self.state: State = State() # Objetc from State
+        self.schedules: Schedules = Schedules(schedules.getTimeIn(), schedules.getHourlyLoad(), schedules.getLunchTime(), schedules.getInitialVacation(), schedules.getFinishVacation()) # Object from Schedules
+        self.clock: Clock = Clock()
+        self.login: Login = Login()
 
     # Getters
 

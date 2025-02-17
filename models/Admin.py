@@ -3,7 +3,7 @@ from ..controllers import Cadastre
 
 class Admin(Empployee):
     def __init__(self):
-        self.cadastre = Cadastre()
+        self.cadastre: Cadastre = Cadastre()
 
     def getEmployee(self, empployee):
         # Waiting DB
