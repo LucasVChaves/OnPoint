@@ -1,22 +1,44 @@
 import json
-from ..models import Employee, Admin, State, Roles
+import re
 from enum import Enum
+from datetime import datetime
+
+from ..models import Empployee, Admin
+from ..utils import State, Schedules, Role
 
 
 class Cadastre():
 
-    def __init__(self, db_file='usuarios.json'):
-        self.db_file = db_file
-        self.usuarios = []
-        try:
-            with open(self.db_file, 'r') as f:
-                self.usuarios = json.load(f)
-        except: (FileNotFoundError, json.JSONDecodeError)   #se der ruim com erro, talvez possa ser assim
-        self.usuarios = []
+    def __init__(self):
+        self.users = [] # Waiting DB
 
-    def createUser(self, user: str, PIN: str, name: str, email: str, phone: str, address: str, cpf: str, rg: str, birthday: str, admission: str, resignation: str, salary: float, hourlyLoad: float, lunchTime: float, initialVacation: str, finishVacation: str, State: State, Role: Roles):
+    def createUser(
+        self, 
+        user: str, 
+        PIN: str, 
+        name: str, 
+        email: str, 
+        phone: int, 
+        address: str, 
+        birthday: datetime, 
+        salary: float, 
+        schedules: Schedules, 
+        state: State, 
+        role: Role
+        ):
+        
         #"add funcionario"
-        if not(self.isValidUser(user) and self.isValidPIN(PIN) and self.isValidName(name) and self.isValidEmail(email) and self.isValidPhone(phone) and self.isValidAdress(address) and self.isValidCpf(cpf) and self.isValidRg(rg) and self.isValidBirthday(birthday) and self.isValidAdmission(admission) and self.isValidResigbation(resignation) and self.isValidSalary(salary) and self.isValidHourlyload(hourlyLoad) and self.isValidLunchtime(lunchTime) and self.isValidInitialvacation(initialVacation) and self.isValidFinishvacation(finishVacation)):
+        if not(
+            self.isValidUser(user) and 
+            self.isValidPIN(PIN) and 
+            self.isValidName(name) and 
+            self.isValidEmail(email) and 
+            self.isValidPhone(phone) and 
+            self.isValidAdress(address) and 
+            self.isValidBirthday(birthday) and 
+            self.isValidSalary(salary) and 
+            self.isValidSchedules(schedules)
+            ):
             return False #usuario invalido
         new_user = {
             "user": user,
@@ -25,74 +47,147 @@ class Cadastre():
             "email": email,
             "phone": phone,
             "address": address,
-            "cpf": cpf,
-            "rg": rg,
             "birthday": birthday,
-            "admission": admission,
-            "resignation": resignation,
             "salary": salary,
-            "hourlyLoad": hourlyLoad,
-            "lunchTime": lunchTime,
-            "initialVacation": initialVacation,
-            "finishVacation": finishVacation,
-            "status": State.value,
-            "role": Role.value,
+            "hourlyLoad": schedules.hourlyLoad(),
+            "lunchTime": schedules.lunchTime(),
+            "initialVacation": schedules.initialVacation(),
+            "finishVacation": schedules.finishVacation(),
+            "status": state.value, 
+            "role": role.value,
         }
-        pass
-
-    def createAdmin(self, user: str, PIN: str, name: str, email: str, phone: str, address: str, cpf: str, rg: str, birthday: str, admission: str, resignation: str, salary: float, hourlyLoad: float, lunchTime: float, initialVacation: str, finishVacation: str, State: State):
-        #"add gerente"
-
-        pass
-
-
+        
+        # Insert new_user in DB
 
     def isValidUser(self, user:str) -> bool:
-        return isinstance(user, str) and not any(u["User"] == user for u in self.usuarios) and len(user) > 0
-        pass
+        if isinstance(user, str):
+            if len(user) >= 5 and len(user) <= 50:
+                #TODO Need to better
+                for user_name in self.users:
+                    if user.name == user_name:
+                        raise ValueError("{user} already exists in DB")
+
+                return True
+            else:
+                raise ValueError("'user' needs to be beetwen 5 and 50 characters")
+        else:
+            raise TypeError("'user' needs to be a 'str'")
+
     def isValidPIN(self, PIN):
-        return isinstance(PIN, int) and not any(u["PIN"] == PIN for u in self.usuarios) and len(PIN) > 0
-        pass
+        if isinstance(PIN, str):
+            if PIN == 0:
+                if len(PIN) == 8:
+                    return True
+                else:
+                    raise ValueError("'PIN' needs to have 8 number")
+            else:
+                raise ValueError("'PIN' is empty")
+        else:
+            raise TypeError("'PIN' needs to be a 'str'")
+
     def isValidName(self, name):
-        return isinstance(name, str) and not any(u["Name"] == name for u in self.usuarios) and len(name) > 0
-        pass
+        if isinstance(name, str):
+            if name == 0:
+                if len(name) < 100:
+                    return True
+            else:
+                raise ValueError("'name' is empty")
+        else:
+            raise TypeError("'name' needs to be a 'str'")
+
     def isValidEmail(self, email):
-        return "@" in email and "." in email and not any(u["email"] == email for u in self.usuarios) #ve se o email ja existe e se é valido
-        pass
-    def isValidPhone(phone):
-        return phone.isdigit() and len(phone) > 0
-        pass
-    def isValidAdress(address):
-        return isinstance(address, str) and len(address) > 0
-        pass
-    def isValidCpf(cpf):
-        return isinstance(cpf, int) and len(cpf) > 0
-        pass
-    def isValidRg(rg):
-        return isinstance(rg, int) and len(rg) > 0
-        pass
-    def isValidBirthday(birthday):
-        return isinstance(birthday, str) and len(birthday.split("-")) == 3 #a data tem que estar no formato dia-mes-ano
-        pass
-    def isValidAdmission(admission):
-        return isinstance(admission, str) and len(admission) > 0
-        pass
-    def isValidResigbation(resignation):
-        return isinstance(resignation, str) and len(resignation) > 0
-        pass
-    def isValidSalary(salary):
-        return isinstance(salary, float) and len(salary) > 0
-        pass
-    def isValidHourlyload(hourlyLoad):
-        return isinstance(hourlyLoad, int) and len(hourlyLoad) > 0
-        pass
-    def isValidLunchtime(lunchTime):
-        return isinstance(lunchTime, int) and len(lunchTime) > 0
-        pass
-    def isValidInitialvacation(initialVacation):
-        return isinstance(initialVacation, str) and len(initialVacation) > 0
-        pass
-    def isValidFinishvacation(finishVacation):
-        return isinstance(finishVacation, str) and len(finishVacation) > 0
-        pass
+        if isinstance(email, str):
+            if len(email) == 0:
+                padrao = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" # Identfy if a email is correct
+                try:
+                    return bool(re.match(padrao, email))
+                except Exception as e:
+                        return e
+            else:
+                raise ValueError("'email' is empty")
+        else:
+            raise TypeError("'email' needs to be a 'str'")
+
+    def isValidPhone(self, phone): # DDD 9 XXXXXXXX
+        if isinstance(phone, int):
+            if phone == 0:
+                return True
+            else:
+                raise ValueError("'phone' cannot be '0'")
+        else:
+            raise TypeError("'phone' needs to be a 'int'")
+
+    def isValidAdress(self, address):
+        if isinstance(address, str):
+            if address != 0:
+                return True
+            else:
+                raise ValueError("'address' is empty")
+        else:
+            raise TypeError("'address' needs to be a 'str'")
+
+    def isValidBirthday(self, birth):
+        if isinstance(birth, datetime):
+            if birth != 0:
+                return True
+            else:
+                raise ValueError("'birth' is empty")
+        else:
+            raise TypeError("'birth' needs to be a 'datetime'")
+
+    def isValidSalary(self, salary):
+        if isinstance(salary, float):
+            if salary > 0:
+                return True
+            else:
+                raise ValueError("'salary' cannot be '0'")
+        else:
+            raise TypeError("'salary' needs to be a 'float'")
+        
+    def isValidHourlyload(self, hourlyLoad):
+        if isinstance(hourlyLoad, datetime):
+            if hourlyLoad != 0:
+                return True
+            else:
+                raise ValueError("'hourlyLoad' is empty")
+        else:
+             raise TypeError("'hourlyLoad' needs to be a 'datetime'")            
+
+    def isValidLunchtime(self, lunchTime):
+        if isinstance(lunchTime, datetime):
+            if lunchTime != 0:
+                return True
+            else:
+                raise ValueError("'lunchTime' is empty")
+        else:
+            raise TypeError("'lunchTime' needs to be a 'datetime'")
+
+    def isValidInitialvacation(self, initialVacation):
+        if isinstance(initialVacation, datetime):
+            if initialVacation != 0:
+                return True
+            else:
+                raise ValueError("'initialVacation' is empty")
+        else:
+            raise TypeError("'initialVacation' needs to be a 'datetime'")
+
+    def isValidFinishvacation(self, finishVacation):
+        if isinstance(finishVacation, str):
+            if finishVacation != 0:
+                return True
+            else:
+                raise ValueError("'finishVacation' is empty")
+        else:
+            raise TypeError("'finishVacation' needs to be a 'datetime'")
+
+    def isValidSchedules(self, scheddules):
+        try:
+            return (
+            self.isValidHourlyload(scheddules.hourlyLoad) and 
+            self.isValidLunchtime(scheddules.lunchTime) and 
+            self.isValidInitialvacation(scheddules.initialVacation) and 
+            self.isValidFinishvacation(scheddules.finishVacation)
+            )
+        except Exception as e:
+            print("{e}")
 
