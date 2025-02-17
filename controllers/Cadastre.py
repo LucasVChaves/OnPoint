@@ -18,7 +18,7 @@ class Cadastre():
         PIN: str, 
         name: str, 
         email: str, 
-        phone: int, 
+        phone: str, 
         address: str, 
         birthday: datetime, 
         salary: float, 
@@ -27,7 +27,6 @@ class Cadastre():
         role: Role
         ):
         
-        #"add funcionario"
         if not(
             self.isValidUser(user) and 
             self.isValidPIN(PIN) and 
@@ -109,13 +108,16 @@ class Cadastre():
             raise TypeError("'email' needs to be a 'str'")
 
     def isValidPhone(self, phone): # DDD 9 XXXXXXXX
-        if isinstance(phone, int):
+        if isinstance(phone, str):
             if phone == 0:
-                return True
+                if len(phone) == 11:
+                    return True
+                else:
+                    raise ValueError("'phone' needs to have 11 characteres")
             else:
                 raise ValueError("'phone' cannot be '0'")
         else:
-            raise TypeError("'phone' needs to be a 'int'")
+            raise TypeError("'phone' needs to be a 'str'")
 
     def isValidAdress(self, address):
         if isinstance(address, str):
