@@ -1,13 +1,22 @@
 import json
-from ..models import Empployee, Admin
+from ..models import Empployee, Admin, State
 from enum import Enum
 
 class Cadastre():
 
-    def createEmpployee(self, user: str, PIN: str, name: str, email: str, phone: str, address: str, cpf: str, rg: str, birthday: str, admission: str, resignation: str, salary: float, hourlyLoad: float, lunchTime: float, initialVacation: str, finishVacation: str, status: str):
-        "add funcionario"
+    def __init__(self, db_file='usuarios.json'):
+        self.db_file = db_file
+        self.usuarios = []
+        try:
+            with open(self.db_file, 'r') as f:
+                self.usuarios = json.load(f)
+        except: (FileNotFoundError, json.JSONDecodeError)   #se der ruim com erro, talvez possa ser assim
+        self.usuarios = []
+
+    def createEmployee(self, user: str, PIN: str, name: str, email: str, phone: str, address: str, cpf: str, rg: str, birthday: str, admission: str, resignation: str, salary: float, hourlyLoad: float, lunchTime: float, initialVacation: str, finishVacation: str, State: State):
+        #"add funcionario"
         if not(self.isValidUser(user) and self.isValidPIN(PIN) and self.isValidName(name) and self.isValidEmail(email) and self.isValidPhone(phone) and self.isValidAdress(address) and self.isValidCpf(cpf) and self.isValidRg(rg) and self.isValidBirthday(birthday) and self.isValidAdmission(admission) and self.isValidResigbation(resignation) and self.isValidSalary(salary) and self.isValidHourlyload(hourlyLoad) and self.isValidLunchtime(lunchTime) and self.isValidInitialvacation(initialVacation) and self.isValidFinishvacation(finishVacation)):
-            return False
+            return False #usuario invalido
         new_user = {
             "user": user,
             "PIN": PIN,
@@ -25,24 +34,46 @@ class Cadastre():
             "lunchTime": lunchTime,
             "initialVacation": initialVacation,
             "finishVacation": finishVacation,
-            "status": "active"
+            "status": State.value
         }
         pass
 
-    def createAdmin(user):
+    def createAdmin(self, user: str, PIN: str, name: str, email: str, phone: str, address: str, cpf: str, rg: str, birthday: str, admission: str, resignation: str, salary: float, hourlyLoad: float, lunchTime: float, initialVacation: str, finishVacation: str, State: State):
+        #"add gerente"
+        if not(self.isValidUser(user) and self.isValidPIN(PIN) and self.isValidName(name) and self.isValidEmail(email) and self.isValidPhone(phone) and self.isValidAdress(address) and self.isValidCpf(cpf) and self.isValidRg(rg) and self.isValidBirthday(birthday) and self.isValidAdmission(admission) and self.isValidResigbation(resignation) and self.isValidSalary(salary) and self.isValidHourlyload(hourlyLoad) and self.isValidLunchtime(lunchTime) and self.isValidInitialvacation(initialVacation) and self.isValidFinishvacation(finishVacation)):
+            return False #usuario invalido
+        new_user = {
+            "user": user,
+            "PIN": PIN,
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "address": address,
+            "cpf": cpf,
+            "rg": rg,
+            "birthday": birthday,
+            "admission": admission,
+            "resignation": resignation,
+            "salary": salary,
+            "hourlyLoad": hourlyLoad,
+            "lunchTime": lunchTime,
+            "initialVacation": initialVacation,
+            "finishVacation": finishVacation,
+            "status": State.value
+        }
         pass
 
     def isValidUser(self, user:str) -> bool:
-        return isinstance(user, str) and len(user) > 0
+        return isinstance(user, str) and not any(u["User"] == user for u in self.usuarios) and len(user) > 0
         pass
-    def isValidPIN(PIN):
-        return isinstance(PIN, int) and len(PIN) > 0
+    def isValidPIN(self, PIN):
+        return isinstance(PIN, int) and not any(u["PIN"] == PIN for u in self.usuarios) and len(PIN) > 0
         pass
-    def isValidName(name):
-        return isinstance(name, str) and len(name) > 0
+    def isValidName(self, name):
+        return isinstance(name, str) and not any(u["Name"] == name for u in self.usuarios) and len(name) > 0
         pass
-    def isValidEmail(email):
-        return "@" in email and "." in email and not any(u["email"] == email for u in self.usuarios)
+    def isValidEmail(self, email):
+        return "@" in email and "." in email and not any(u["email"] == email for u in self.usuarios) #ve se o email ja existe e se é valido
         pass
     def isValidPhone(phone):
         return phone.isdigit() and len(phone) > 0
@@ -57,7 +88,7 @@ class Cadastre():
         return isinstance(rg, int) and len(rg) > 0
         pass
     def isValidBirthday(birthday):
-        return isinstance(birthday, str) and len(birthday) > 0
+        return isinstance(birthday, str) and len(birthday.split("-")) == 3 #a data tem que estar no formato dia-mes-ano
         pass
     def isValidAdmission(admission):
         return isinstance(admission, str) and len(admission) > 0
