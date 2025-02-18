@@ -7,22 +7,6 @@ class Clock():
 
     # OBS: Precisa implementar
 
-    # Getters
-
-    def getEntranceTime(self):
-        return self.entranceTime
-    
-    def getExitTime(self):
-        return self.exitTime
-    
-    # Setters
-    
-    def setEntranceTime(self, entranceTime):
-        self.entranceTime = entranceTime
-
-    def setExitTime(self, exitTime):
-        self.exitTime = exitTime
-
     def validateClock(self):
         pass
 
