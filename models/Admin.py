@@ -1,7 +1,7 @@
-import Empployee
+import Employee
 from ..controllers import Cadastre
 
-class Admin(Empployee):
+class Admin(Employee):
     def __init__(self):
         self.cadastre: Cadastre = Cadastre()
 
