@@ -3,7 +3,7 @@ import re
 from enum import Enum
 from datetime import datetime
 
-from ..models import Empployee, Admin
+from ..models import Employee, Admin
 from ..utils import State, Schedules, Role
 
 
