@@ -11,7 +11,7 @@ class Cadastre():
         self.jsonManager: JSONManager = JSONManager()
         self.idGen: IDGen = IDGen()
 
-    def cadastreUser(
+    def cadastre_user(
         self,
         PIN: str, 
         name: str, 
@@ -20,20 +20,19 @@ class Cadastre():
         address: str, 
         birth: datetime, 
         salary: float, 
-        schedules: Schedules, 
-        state: State, 
+        schedules: Schedules,  
         role: Role
         ):
         
         if not(
-            self.isValidPIN(PIN=PIN) and 
-            self.isValidName(name=name) and 
-            self.isValidEmail(email=email) and 
-            self.isValidPhone(phone=phone) and 
-            self.isValidAdress(address=address) and 
-            self.isValidBirthday(birth=birth) and 
-            self.isValidSalary(salary=salary) and 
-            self.isValidSchedules(schedules=schedules)
+            self.is_valid_PIN(PIN=PIN) and 
+            self.is_valid_name(name=name) and 
+            self.is_valid_email(email=email) and 
+            self.is_valid_phone(phone=phone) and 
+            self.is_valid_adress(address=address) and 
+            self.is_valid_birthday(birth=birth) and 
+            self.is_valid_salary(salary=salary) and 
+            self.is_valid_schedules(schedules=schedules)
             ):
             return False #usuario invalido
         
@@ -80,7 +79,7 @@ class Cadastre():
         # Insert new_user in DB
         return self.jsonManager.save_to_json(id=new_user.id, new_user=new_user)
 
-    def isValidPIN(self, PIN):
+    def is_valid_PIN(self, PIN):
         if isinstance(PIN, str):
             if PIN == 0:
                 if len(PIN) == 8:
@@ -92,7 +91,7 @@ class Cadastre():
         else:
             raise TypeError("'PIN' needs to be a 'str'")
 
-    def isValidName(self, name):
+    def is_valid_name(self, name):
         if isinstance(name, str):
             if name == 0:
                 if len(name) < 100:
@@ -102,7 +101,7 @@ class Cadastre():
         else:
             raise TypeError("'name' needs to be a 'str'")
 
-    def isValidEmail(self, email):
+    def is_valid_email(self, email):
         if isinstance(email, str):
             if len(email) == 0:
                 padrao = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" # Identfy if a email is correct
@@ -115,7 +114,7 @@ class Cadastre():
         else:
             raise TypeError("'email' needs to be a 'str'")
 
-    def isValidPhone(self, phone): # DDD 9 XXXXXXXX
+    def is_valid_phone(self, phone): # DDD 9 XXXXXXXX
         if isinstance(phone, str):
             if phone == 0:
                 if len(phone) == 11:
@@ -127,7 +126,7 @@ class Cadastre():
         else:
             raise TypeError("'phone' needs to be a 'str'")
 
-    def isValidAdress(self, address):
+    def is_valid_adress(self, address):
         if isinstance(address, str):
             if address != 0:
                 return True
@@ -136,7 +135,7 @@ class Cadastre():
         else:
             raise TypeError("'address' needs to be a 'str'")
 
-    def isValidBirthday(self, birth):
+    def is_valid_birthday(self, birth):
         if isinstance(birth, datetime):
             if birth != 0:
                 return True
@@ -145,7 +144,7 @@ class Cadastre():
         else:
             raise TypeError("'birth' needs to be a 'datetime'")
 
-    def isValidSalary(self, salary):
+    def is_valid_salary(self, salary):
         if isinstance(salary, float):
             if salary > 0:
                 return True
@@ -154,7 +153,7 @@ class Cadastre():
         else:
             raise TypeError("'salary' needs to be a 'float'")
         
-    def isValidHourlyload(self, hourlyLoad):
+    def is_valid_hourlyload(self, hourlyLoad):
         if isinstance(hourlyLoad, datetime):
             if hourlyLoad != 0:
                 return True
@@ -163,7 +162,7 @@ class Cadastre():
         else:
              raise TypeError("'hourlyLoad' needs to be a 'datetime'")            
 
-    def isValidLunchtime(self, lunchTime):
+    def is_valid_lunch_time(self, lunchTime):
         if isinstance(lunchTime, datetime):
             if lunchTime != 0:
                 return True
@@ -172,7 +171,7 @@ class Cadastre():
         else:
             raise TypeError("'lunchTime' needs to be a 'datetime'")
 
-    def isValidInitialvacation(self, initialVacation):
+    def is_valid_initial_vacation(self, initialVacation):
         if isinstance(initialVacation, datetime):
             if initialVacation != 0:
                 return True
@@ -181,7 +180,7 @@ class Cadastre():
         else:
             raise TypeError("'initialVacation' needs to be a 'datetime'")
 
-    def isValidFinishvacation(self, finishVacation):
+    def is_valid_finish_vacation(self, finishVacation):
         if isinstance(finishVacation, str):
             if finishVacation != 0:
                 return True
@@ -190,13 +189,13 @@ class Cadastre():
         else:
             raise TypeError("'finishVacation' needs to be a 'datetime'")
 
-    def isValidSchedules(self, scheddules):
+    def is_valid_schedules(self, scheddules):
         try:
             return (
-            self.isValidHourlyload(hourlyLoad=scheddules.hourlyLoad) and 
-            self.isValidLunchtime(lunchTime=scheddules.lunchTime) and 
-            self.isValidInitialvacation(initialVacation=scheddules.initialVacation) and 
-            self.isValidFinishvacation(finishVacation=scheddules.finishVacation)
+            self.is_valid_hourlyload(hourlyLoad=scheddules.hourlyLoad) and 
+            self.is_valid_lunch_time(lunchTime=scheddules.lunchTime) and 
+            self.is_valid_initial_vacation(initialVacation=scheddules.initialVacation) and 
+            self.is_valid_finish_vacation(finishVacation=scheddules.finishVacation)
             )
         except Exception as e:
             raise ValueError("{e}")
