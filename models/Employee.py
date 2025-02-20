@@ -7,7 +7,6 @@ import Clock, Schedules, Role
 class Employee:
     def __init__(
                 self, 
-                user: str, 
                 PIN: str, 
                 name: str, 
                 salary: float, 
@@ -18,7 +17,6 @@ class Employee:
                 role: Role
                 ):
         
-        self.user: str = user
         self.PIN: str = PIN
         self.name: str = name
         self.salary: float = salary

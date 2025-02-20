@@ -1,26 +1,24 @@
-import json
 import re
-from enum import Enum
 from datetime import datetime
 
-from ..models import Employee, Admin
-from ..utils import State, Schedules, Role
-
+from ..models import Employee, Admin, Schedules, Role
+from ..utils import State, JSONManager, IDGen
 
 class Cadastre():
 
     def __init__(self):
         self.users = [] # Waiting DB
+        self.jsonManager: JSONManager = JSONManager()
+        self.idGen: IDGen = IDGen()
 
-    def createUser(
-        self, 
-        user: str, 
+    def cadastreUser(
+        self,
         PIN: str, 
         name: str, 
         email: str, 
         phone: str, 
         address: str, 
-        birthday: datetime, 
+        birth: datetime, 
         salary: float, 
         schedules: Schedules, 
         state: State, 
@@ -28,49 +26,59 @@ class Cadastre():
         ):
         
         if not(
-            self.isValidUser(user) and 
-            self.isValidPIN(PIN) and 
-            self.isValidName(name) and 
-            self.isValidEmail(email) and 
-            self.isValidPhone(phone) and 
-            self.isValidAdress(address) and 
-            self.isValidBirthday(birthday) and 
-            self.isValidSalary(salary) and 
-            self.isValidSchedules(schedules)
+            self.isValidPIN(PIN=PIN) and 
+            self.isValidName(name=name) and 
+            self.isValidEmail(email=email) and 
+            self.isValidPhone(phone=phone) and 
+            self.isValidAdress(address=address) and 
+            self.isValidBirthday(birth=birth) and 
+            self.isValidSalary(salary=salary) and 
+            self.isValidSchedules(schedules=schedules)
             ):
             return False #usuario invalido
-        new_user = {
-            "user": user,
-            "PIN": PIN,
-            "name": name,
-            "email": email,
-            "phone": phone,
-            "address": address,
-            "birthday": birthday,
-            "salary": salary,
-            "hourlyLoad": schedules.hourlyLoad(),
-            "lunchTime": schedules.lunchTime(),
-            "initialVacation": schedules.initialVacation(),
-            "finishVacation": schedules.finishVacation(),
-            "status": state.value, 
-            "role": role.value,
-        }
+        
+        if role == Role.ADMIN:
+            new_user: Admin = Admin(
+                                    PIN=PIN, 
+                                    name=name, 
+                                    salary=salary, 
+                                    email=email, 
+                                    birth=birth, 
+                                    phone=phone, 
+                                    schedules=schedules, 
+                                    role=role
+                                    )
+        else:
+            new_user: Employee = Employee(
+                                        PIN=PIN, 
+                                        name=name, 
+                                        salary=salary, 
+                                        email=email, 
+                                        birth=birth, 
+                                        phone=phone, 
+                                        schedules=schedules, 
+                                        role=role
+                                        )
+                                         
+        # new_user = {
+        #     "user": user,
+        #     "PIN": PIN,
+        #     "name": name,
+        #     "email": email,
+        #     "phone": phone,
+        #     "address": address,
+        #     "birthday": birthday,
+        #     "salary": salary,
+        #     "hourlyLoad": schedules.hourlyLoad(),
+        #     "lunchTime": schedules.lunchTime(),
+        #     "initialVacation": schedules.initialVacation(),
+        #     "finishVacation": schedules.finishVacation(),
+        #     "status": state.value, 
+        #     "role": role.value,
+        # }
         
         # Insert new_user in DB
-
-    def isValidUser(self, user:str) -> bool:
-        if isinstance(user, str):
-            if len(user) >= 5 and len(user) <= 50:
-                #TODO Need to better
-                for user_name in self.users:
-                    if user.name == user_name:
-                        raise ValueError("{user} already exists in DB")
-
-                return True
-            else:
-                raise ValueError("'user' needs to be beetwen 5 and 50 characters")
-        else:
-            raise TypeError("'user' needs to be a 'str'")
+        return self.jsonManager.save_to_json(id=new_user.id, new_user=new_user)
 
     def isValidPIN(self, PIN):
         if isinstance(PIN, str):
@@ -185,11 +193,11 @@ class Cadastre():
     def isValidSchedules(self, scheddules):
         try:
             return (
-            self.isValidHourlyload(scheddules.hourlyLoad) and 
-            self.isValidLunchtime(scheddules.lunchTime) and 
-            self.isValidInitialvacation(scheddules.initialVacation) and 
-            self.isValidFinishvacation(scheddules.finishVacation)
+            self.isValidHourlyload(hourlyLoad=scheddules.hourlyLoad) and 
+            self.isValidLunchtime(lunchTime=scheddules.lunchTime) and 
+            self.isValidInitialvacation(initialVacation=scheddules.initialVacation) and 
+            self.isValidFinishvacation(finishVacation=scheddules.finishVacation)
             )
         except Exception as e:
-            print("{e}")
+            raise ValueError("{e}")
 
