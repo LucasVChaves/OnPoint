@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from ..controllers import Login
-from ..utils import State 
+from ..utils import State, IDGen 
 import Clock, Schedules, Role
 
 class Employee:
@@ -36,4 +36,4 @@ class Employee:
         self.clock: Clock = Clock()
         self.login: Login = Login()
         self.role: Role = role
-
+        self.id = IDGen.gen_id(self.PIN)
