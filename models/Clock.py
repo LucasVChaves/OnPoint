@@ -4,26 +4,30 @@ import Schedules
 
 class Clock():
     def __init__(self):
-        self.entranceTime: datetime = datetime()
-        self.exitTime: datetime = datetime()()
-        pass
+        self.entrance_time: datetime = datetime()
+        self.lunch_time: datetime = datetime()
 
-    def validateStart(self,Schedules: Schedules, work_start: datetime):
-        current_time = datetime.now()
-        work_start = Schedules.timeIn
+    #TODO Refazer função para tratar erro (talvez)
+    #TODO Melhorar validação, como validação de estados (Férias, doente, etc)
+
+    # No lugar de "self.entrance_time", colocar apenas hora atual
+    def validate_start(self, schedules: Schedules):
+        work_start = schedules.timeIn
         
-        if self.entranceTime > work_start:
+        if self.entrance_time > work_start:
             raise ValueError("Entrance time is greater than work start")
-        if self.entranceTime < work_start:
+        if self.entrance_time < work_start:
             raise ValueError("Entrance time is less than work start")
-        if self.entranceTime == work_start:
+        if self.entrance_time == work_start:
             return True
 
-    def validateEnd(self,Schedules: Schedules,exitTime: datetime):
+    #TODO Refazer função para tratar erro (talvez)
+    #TODO Melhorar validação, como validação de estados (Férias, doente, etc)
 
-        current_time = datetime.now()
-        work_start = Schedules.timeIn
-        work_end = Schedules.timeIn + Schedules.hourlyLoad + Schedules.lunchTime
+    #OBS: Trocar "exitTime" por hora atual
+    def validate_end(self, schedules: Schedules):
+
+        work_end = self.entrance_time + schedules.hourlyLoad + schedules.lunchTime
         overtime = exitTime - work_end
 
         if self.exitTime > work_end:
@@ -33,7 +37,9 @@ class Clock():
         if self.exitTime == work_end:
             return True
 
-    """def validateLunch(self,Schedules: Schedules, lunchTime: datetime):
+    #TODO Refazer a função inteiro pq nada faz sentido! (Aceito réplicas)
+    #TODO Fazer apenas a verificação de estados, e verificar se o funcionário já almoçou
+    def validate_lunch_intial(self, schedules: Schedules):
         work_start = Schedules.timeIn
         work_end = Schedules.timeIn + Schedules.hourlyLoad
         lunch_start = Schedules.timeIn + Schedules.hourlyLoad
@@ -51,19 +57,18 @@ class Clock():
         if self.exitTime < lunch_end:
             raise ValueError("Exit time is less than lunch end")
         if self.exitTime == lunch_end:  
-            return True"""
+            return True
         
-    def actionClockIn(self):
-
-        self.entranceTime = datetime.now()
+    def validate_lunch_finish(self, schedules: Schedules):
+        pass
+        
+    def action_clock_in(self):
         self.validateStart()
-        pass
+        self.entranceTime = datetime.now()
 
-    def actionClockOut(self):
-        
-        self.exitTime = datetime.now()
+    def action_clock_out(self):
         self.validateEnd()
-        pass
-
-    def justifiedDelay(self):
+        self.exitTime = datetime.now()
+        
+    def justified_clock(self):
         pass
