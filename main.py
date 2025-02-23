@@ -4,4 +4,4 @@ from views import GUI
 # Esse trem esquisito serve pra garantir esse
 # arquivo como entrypoint
 if __name__ == "__main__":
-    GUI()
+    app = GUI  # Inicia a interface gráfica
