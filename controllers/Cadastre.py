@@ -8,8 +8,8 @@ class Cadastre():
 
     def __init__(self):
         self.users = [] # Waiting DB
-        self.jsonManager: JSONManager = JSONManager()
-        self.idGen: IDGen = IDGen()
+        self.json_manager: JSONManager = JSONManager()
+        self.id_gen: IDGen = IDGen()
 
     def cadastre_user(
         self,
@@ -58,23 +58,6 @@ class Cadastre():
                                         schedules=schedules, 
                                         role=role
                                         )
-                                         
-        # new_user = {
-        #     "user": user,
-        #     "PIN": PIN,
-        #     "name": name,
-        #     "email": email,
-        #     "phone": phone,
-        #     "address": address,
-        #     "birthday": birthday,
-        #     "salary": salary,
-        #     "hourlyLoad": schedules.hourlyLoad(),
-        #     "lunchTime": schedules.lunchTime(),
-        #     "initialVacation": schedules.initialVacation(),
-        #     "finishVacation": schedules.finishVacation(),
-        #     "status": state.value, 
-        #     "role": role.value,
-        # }
         
         # Insert new_user in DB
         return self.jsonManager.save_to_json(id=new_user.id, new_user=new_user)

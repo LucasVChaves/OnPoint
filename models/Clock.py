@@ -1,69 +1,72 @@
-from datetime import datetime
-import Schedules
+from datetime import datetime, timedelta
 
+import Schedules
+from ..utils import State
 
 class Clock():
     def __init__(self):
-        self.entranceTime: datetime = datetime()
-        self.exitTime: datetime = datetime()()
-        pass
-
-    def validateStart(self,Schedules: Schedules, work_start: datetime):
-        current_time = datetime.now()
-        work_start = Schedules.timeIn
+        self.entrance_time: datetime = datetime()
+        self.lunch_complete: bool = False
+        self.lunch_start: datetime = datetime()
         
-        if self.entranceTime > work_start:
-            raise ValueError("Entrance time is greater than work start")
-        if self.entranceTime < work_start:
-            raise ValueError("Entrance time is less than work start")
-        if self.entranceTime == work_start:
-            return True
+    def action_clock(self, schedules: Schedules, state: State):
+        now = datetime.now()
+        high_limit = schedules.time_in - timedelta(minutes=15)
+        low_limit = schedules.time_in + timedelta(minutes=15)
 
-    def validateEnd(self,Schedules: Schedules,exitTime: datetime):
+        # Validando Entrada
+        match state:
+            # Fora de serviço -> Trabalhando
+            case State.OUT_WORK:
+                # Verifica se está entrando no horário certo
+                #TODO Falta completar o "else"
+                if now <= high_limit or now >= low_limit:
+                    return True
+                else:
+                    raise ValueError("Entrando fora do horário proposto!")
+            # Trabalhando -> Fora de serviço
+            case State.WORKING:
+                if self.lunch_complete:
+                    if now == self.entrance_time + schedules.hourly_time + schedules.lunch_time:
+                        self.entrance_time = 0
+                        self.lunch_start = 0
+                        self.lunch_complete = False
+                        return True
+                    elif now > self.entrance_time + schedules.hourly_time + schedules.lunch_time:
+                        raise ValueError("Saindo mais tarde")
+                    else:
+                        raise ValueError("Saindo mais cedo")
+                else:
+                    raise ValueError("Num almoçou pq?")
+            case _:
+                raise ValueError("Estado errado lek")
 
-        current_time = datetime.now()
-        work_start = Schedules.timeIn
-        work_end = Schedules.timeIn + Schedules.hourlyLoad + Schedules.lunchTime
-        overtime = exitTime - work_end
+    def action_lunch(self, schedules: Schedules, state: State):
 
-        if self.exitTime > work_end:
-            raise ValueError("Exit time is {overtime} hour(s) after than work end")
-        if self.exitTime < work_end:
-            raise ValueError("Exit time is {overtime} hour(s) before than work end")
-        if self.exitTime == work_end:
-            return True
+        # Validando
+        match state:
+            # Trabalhando -> Almoçando
+            case State.WORKING:
+                if self.lunch_start == 0:
+                    if not self.lunch_complete:
+                        self.lunch_start = datetime.now()
+                        state = State.LUNCH
+                        return True
+                    else:
+                        raise ValueError("Hora de almoço já foi completa")
+                else:
+                    raise ValueError("Horaário de almoço já foi iniciado")
+            # Almoçando -> Trabalhando 
+            case State.LUNCH:
+                # Não sei se isso está certo
+                if datetime.now() - self.lunch_start == schedules.lunch_time:
+                    self.lunch_complete = True
+                    state = State.WORKING
+                    return True
+                else:
+                    raise ("Hora de almoço incompleto")
+            case _ :
+                raise ValueError("Estado errado")
 
-    """def validateLunch(self,Schedules: Schedules, lunchTime: datetime):
-        work_start = Schedules.timeIn
-        work_end = Schedules.timeIn + Schedules.hourlyLoad
-        lunch_start = Schedules.timeIn + Schedules.hourlyLoad
-        lunch_end = Schedules.timeIn + Schedules.hourlyLoad + Schedules.lunchTime
-
-        if self.entranceTime > lunch_start:
-            raise ValueError("Entrance time is greater than lunch start")
-        if self.entranceTime < lunch_start:
-            raise ValueError("Entrance time is less than lunch start")
-        if self.entranceTime == lunch_start:
-            return True
-
-        if self.exitTime > lunch_end:
-            raise ValueError("Exit time is greater than lunch end")
-        if self.exitTime < lunch_end:
-            raise ValueError("Exit time is less than lunch end")
-        if self.exitTime == lunch_end:  
-            return True"""
-        
-    def actionClockIn(self):
-
-        self.entranceTime = datetime.now()
-        self.validateStart()
-        pass
-
-    def actionClockOut(self):
-        
-        self.exitTime = datetime.now()
-        self.validateEnd()
-        pass
-
-    def justifiedDelay(self):
+    def justified_clock(self):
         pass
