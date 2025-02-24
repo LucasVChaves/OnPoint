@@ -8,12 +8,13 @@ class Clock():
         self.entrance_time: datetime = datetime()
         self.lunch_complete: bool = False
         self.lunch_start: datetime = datetime()
-
-    def validate_clock(self, schedules: Schedules, state: State):
+        
+    def action_clock(self, schedules: Schedules, state: State):
         now = datetime.now()
         high_limit = schedules.time_in - timedelta(minutes=15)
         low_limit = schedules.time_in + timedelta(minutes=15)
-        
+
+        # Validando Entrada
         match state:
             # Fora de serviço -> Trabalhando
             case State.OUT_WORK:
@@ -21,6 +22,8 @@ class Clock():
                 #TODO Falta completar o "else"
                 if now <= high_limit or now >= low_limit:
                     return True
+                else:
+                    raise ValueError("Entrando fora do horário proposto!")
             # Trabalhando -> Fora de serviço
             case State.WORKING:
                 if self.lunch_complete:
@@ -33,11 +36,14 @@ class Clock():
                         raise ValueError("Saindo mais tarde")
                     else:
                         raise ValueError("Saindo mais cedo")
+                else:
+                    raise ValueError("Num almoçou pq?")
             case _:
                 raise ValueError("Estado errado lek")
 
-    def validate_lunch(self, schedules: Schedules, state: State):
+    def action_lunch(self, schedules: Schedules, state: State):
 
+        # Validando
         match state:
             # Trabalhando -> Almoçando
             case State.WORKING:
@@ -46,23 +52,21 @@ class Clock():
                         self.lunch_start = datetime.now()
                         state = State.LUNCH
                         return True
+                    else:
+                        raise ValueError("Hora de almoço já foi completa")
+                else:
+                    raise ValueError("Horaário de almoço já foi iniciado")
             # Almoçando -> Trabalhando 
             case State.LUNCH:
-                #if datetime.now() - self.lunch_start == schedules.lunch_time:
-                self.lunch_complete = True
-                state = State.WORKING
-                return True
+                # Não sei se isso está certo
+                if datetime.now() - self.lunch_start == schedules.lunch_time:
+                    self.lunch_complete = True
+                    state = State.WORKING
+                    return True
+                else:
+                    raise ("Hora de almoço incompleto")
             case _ :
-                raise ValueError("Ta errado aí lek")
-                    
-
-        
-    def action_clock(self, schedules: Schedules, state: State):
-        self.validade_clock(schedules=schedules, state=state)
-        #self.entranceTime = datetime.now()
-
-    def action_lunch(self, schedules: Schedules, state: State):
-        self.validate_lunch(schedules=schedules, state=state)
+                raise ValueError("Estado errado")
 
     def justified_clock(self):
         pass
