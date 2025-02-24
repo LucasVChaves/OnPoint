@@ -7,4 +7,3 @@ class State(Enum):
     LICENCE = "Licence"
     
     #TODO ADD more states
-    
