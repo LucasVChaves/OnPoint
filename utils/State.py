@@ -5,6 +5,8 @@ class State(Enum):
     WORKING = "Working"
     VACATION = "Vacation"
     LICENCE = "Licence"
+    OUT_WORK = "Out work"
+    LUNCH = "Lunch"
     
     #TODO ADD more states
     
