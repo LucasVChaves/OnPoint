@@ -60,9 +60,9 @@ class Cadastre():
                                         )
         
         # Insert new_user in DB
-        return (self.jsonManager.save_to_json(category="employee",id=new_user.id, new_user=new_user) and 
-                self.json_manager.save_to_json(category="schedules", id=new_user.id, new_user=new_user.schedules) and
-                self.json_manager.save_tojson(category="role", id=new_user.id, new_user=new_user.Role))
+        return (self.jsonManager.save_to_json(category="employee",id=new_user.id, new_object=new_user) and 
+                self.json_manager.save_to_json(category="schedules", id=new_user.id, new_object=new_user.schedules) and
+                self.json_manager.save_tojson(category="role", id=new_user.id, new_object=new_user.Role))
 
 
     def is_valid_PIN(self, PIN):
