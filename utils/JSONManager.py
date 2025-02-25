@@ -41,7 +41,7 @@ class JSONManager:
         for i, obj in enumerate(data):
             if obj.get('id') == new_object['id']:
                 data[i] = new_object
-                break;
+                break
             else:
                 data.append(new_object)
 
