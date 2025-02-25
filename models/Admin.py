@@ -1,11 +1,10 @@
-import Employee
+from Employee import Employee
 from ..controllers import Cadastre
 from ..utils import JSONManager, State
 
 class Admin(Employee):
     def __init__(self):
         self.cadastre: Cadastre = Cadastre()
-        self.json_manager: JSONManager = JSONManager()
 
     # def getUser(self, id):
     #     if self.json_manager.load_from_json() == State.ADMIN:
@@ -25,7 +24,7 @@ class Admin(Employee):
         pass
 
     def cadastre_user(self, user):
-        return self.cadastre.createEmpployee(user)
+        return self.cadastre.createEmployee(user)
     
         # user pode ser Employee ou Admin
 
