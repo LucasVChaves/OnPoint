@@ -52,12 +52,3 @@ class JSONManager:
         except Exception as e:
             print(f"Erro ao salvar no arquivo JSON de {category}: {e}")
             return False
-
-
-
-loader = JSONManager()
-print(loader.load_from_json(category="employee", id="1"))
-
-updated_employee =  {'id': '1', 'name': 'Testinho', 'role': 'gerente'}
-loader.save_to_json(category='employee', id='1', new_object=updated_employee)
-print(loader.load_from_json(category="employee", id="1"))
