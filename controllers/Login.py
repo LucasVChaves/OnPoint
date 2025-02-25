@@ -18,7 +18,7 @@ class Login():
         # Busca o usuário baseado no id
         user = self.json_manager.load_from_json(category="employee",id=id)
 
-        if PIN == user.PIN:
+        if PIN == user.get_PIN():
             return True
         else:
             raise ValueError("PIN ERRADA!")
@@ -30,12 +30,12 @@ class Login():
 
             # Cria uma senha nova
             new_pin = ''.join(random.choices(string.digits, k=8))
-            user.PIN = new_pin
+            user.set_PIN(new_pin)
             self.json_manager.save_to_json(category="employee", id=id, new_object=user)
 
             msg = MIMEMultipart()
             msg['From'] = 'noreply@gmail.com'
-            msg['To'] = user.email
+            msg['To'] = user.get_email()
             msg['Subject'] = 'Your new PIN'
 
             body = f'Hello {user},\n\nYour new PIN is: {new_pin}\n\nBest regards,\nOn Point Team'

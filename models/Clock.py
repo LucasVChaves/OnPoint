@@ -8,6 +8,26 @@ class Clock():
         self.entrance_time: datetime = datetime()
         self.lunch_complete: bool = False
         self.lunch_start: datetime = datetime()
+
+    # Getter and Setter
+    def get_entrance_time(self):
+        return self.entrance_time
+    
+    def set_entrance_time(self, entrance_time):
+        self.entrance_time = entrance_time
+
+    def get_lunch_complete(self):
+        return self.lunch_complete
+    
+    def set_lunch_complete(self, lunch_complete):
+        self.lunch_complete = lunch_complete
+
+    def get_lunch_start(self):
+        return self.lunch_start
+    
+    def set_lunch_start(self, lunch_start):
+        self.lunch_start = lunch_start
+
         
     def action_clock(self, schedules: Schedules, state: State):
         now = datetime.now()
