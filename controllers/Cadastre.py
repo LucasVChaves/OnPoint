@@ -8,8 +8,8 @@ class Cadastre():
 
     def __init__(self):
         self.users = [] # Waiting DB
-        self.jsonManager: JSONManager = JSONManager()
-        self.idGen: IDGen = IDGen()
+        self.json_manager: JSONManager = JSONManager()
+        self.id_gen: IDGen = IDGen()
 
     def cadastre_user(
         self,
@@ -58,30 +58,19 @@ class Cadastre():
                                         schedules=schedules, 
                                         role=role
                                         )
-                                         
-        # new_user = {
-        #     "user": user,
-        #     "PIN": PIN,
-        #     "name": name,
-        #     "email": email,
-        #     "phone": phone,
-        #     "address": address,
-        #     "birthday": birthday,
-        #     "salary": salary,
-        #     "hourlyLoad": schedules.hourlyLoad(),
-        #     "lunchTime": schedules.lunchTime(),
-        #     "initialVacation": schedules.initialVacation(),
-        #     "finishVacation": schedules.finishVacation(),
-        #     "status": state.value, 
-        #     "role": role.value,
-        # }
         
         # Insert new_user in DB
-        return self.jsonManager.save_to_json(id=new_user.id, new_user=new_user)
+        return (self.jsonManager.save_to_json(category="employee",id=new_user.get_id(), new_object=new_user) and 
+                self.json_manager.save_to_json(category="schedules", id=new_user.get_id(), new_object=new_user.get_schedules()) and
+                self.json_manager.save_tojson(category="role", id=new_user.get_id(), new_object=new_user.get_role()))
+
 
     def is_valid_PIN(self, PIN):
+        # Verifica se PIN é uma str
         if isinstance(PIN, str):
-            if PIN == 0:
+            # Verifica se PIN contém algo
+            if PIN != 0:
+                # Verifica se o tamanho é o correto
                 if len(PIN) == 8:
                     return True
                 else:
@@ -92,8 +81,11 @@ class Cadastre():
             raise TypeError("'PIN' needs to be a 'str'")
 
     def is_valid_name(self, name):
+        # Verifica se name é uma str
         if isinstance(name, str):
-            if name == 0:
+            # Verifica se name contém algo
+            if name != 0:
+                # Verifica se o tamanho é o correto
                 if len(name) < 100:
                     return True
             else:
@@ -102,8 +94,11 @@ class Cadastre():
             raise TypeError("'name' needs to be a 'str'")
 
     def is_valid_email(self, email):
+        # Verifica se email é um str
         if isinstance(email, str):
-            if len(email) == 0:
+            # Verifica se email é do tamanho correto
+            if len(email) != 0:
+                # Verifica se está no padrão de email: XXXX@tanana.com
                 padrao = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" # Identfy if a email is correct
                 try:
                     return bool(re.match(padrao, email))
@@ -115,8 +110,11 @@ class Cadastre():
             raise TypeError("'email' needs to be a 'str'")
 
     def is_valid_phone(self, phone): # DDD 9 XXXXXXXX
+        # Verifica se phone é str
         if isinstance(phone, str):
-            if phone == 0:
+            # Verifica se phone está vazio
+            if phone != 0:
+                # Verifica se o tamanho é o correto
                 if len(phone) == 11:
                     return True
                 else:
@@ -127,7 +125,9 @@ class Cadastre():
             raise TypeError("'phone' needs to be a 'str'")
 
     def is_valid_adress(self, address):
+        # Verifica se address é uma str
         if isinstance(address, str):
+            # Verifica se address está vazio
             if address != 0:
                 return True
             else:
@@ -136,7 +136,9 @@ class Cadastre():
             raise TypeError("'address' needs to be a 'str'")
 
     def is_valid_birthday(self, birth):
+        # Verifica se birth é um datetime
         if isinstance(birth, datetime):
+            # Verifica se está vazio
             if birth != 0:
                 return True
             else:
@@ -145,7 +147,9 @@ class Cadastre():
             raise TypeError("'birth' needs to be a 'datetime'")
 
     def is_valid_salary(self, salary):
+        # Verifica se salary é um float
         if isinstance(salary, float):
+            # Verifica se salary é maior que 0
             if salary > 0:
                 return True
             else:
@@ -153,49 +157,33 @@ class Cadastre():
         else:
             raise TypeError("'salary' needs to be a 'float'")
         
-    def is_valid_hourlyload(self, hourlyLoad):
-        if isinstance(hourlyLoad, datetime):
-            if hourlyLoad != 0:
+    def is_valid_hourlyload(self, hourly_load):
+        # Verifica se hourly_load é um datetime
+        if isinstance(hourly_load, datetime):
+            # Verifica se está vazio
+            if hourly_load != 0:
                 return True
             else:
                 raise ValueError("'hourlyLoad' is empty")
         else:
              raise TypeError("'hourlyLoad' needs to be a 'datetime'")            
 
-    def is_valid_lunch_time(self, lunchTime):
-        if isinstance(lunchTime, datetime):
-            if lunchTime != 0:
+    def is_valid_lunch_time(self, lunch_time):
+        # Verifica se lunch_time é um datetime
+        if isinstance(lunch_time, datetime):
+            # Verifica se lunch_time está vazio
+            if lunch_time != 0:
                 return True
             else:
                 raise ValueError("'lunchTime' is empty")
         else:
             raise TypeError("'lunchTime' needs to be a 'datetime'")
 
-    def is_valid_initial_vacation(self, initialVacation):
-        if isinstance(initialVacation, datetime):
-            if initialVacation != 0:
-                return True
-            else:
-                raise ValueError("'initialVacation' is empty")
-        else:
-            raise TypeError("'initialVacation' needs to be a 'datetime'")
-
-    def is_valid_finish_vacation(self, finishVacation):
-        if isinstance(finishVacation, str):
-            if finishVacation != 0:
-                return True
-            else:
-                raise ValueError("'finishVacation' is empty")
-        else:
-            raise TypeError("'finishVacation' needs to be a 'datetime'")
-
     def is_valid_schedules(self, scheddules):
         try:
             return (
-            self.is_valid_hourlyload(hourlyLoad=scheddules.hourlyLoad) and 
-            self.is_valid_lunch_time(lunchTime=scheddules.lunchTime) and 
-            self.is_valid_initial_vacation(initialVacation=scheddules.initialVacation) and 
-            self.is_valid_finish_vacation(finishVacation=scheddules.finishVacation)
+            self.is_valid_hourlyload(hourlyLoad=scheddules.get_hourly_load()) and 
+            self.is_valid_lunch_time(lunchTime=scheddules.get_lunch_Time())
             )
         except Exception as e:
             raise ValueError("{e}")
