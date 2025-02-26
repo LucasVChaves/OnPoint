@@ -2,7 +2,8 @@
     {
         "id": "1",
         "name": "Testinho",
-        "role": "gerente"
+        "role": "gerente",
+        "PIN": "1234"
     },
     {
         "id": "2",
