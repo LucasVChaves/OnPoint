@@ -9,4 +9,3 @@ class State(Enum):
     LUNCH = "Lunch"
     
     #TODO ADD more states
-    

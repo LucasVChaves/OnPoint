@@ -60,9 +60,9 @@ class Cadastre():
                                         )
         
         # Insert new_user in DB
-        return (self.jsonManager.save_to_json(category="employee",id=new_user.id, new_object=new_user) and 
-                self.json_manager.save_to_json(category="schedules", id=new_user.id, new_object=new_user.schedules) and
-                self.json_manager.save_tojson(category="role", id=new_user.id, new_object=new_user.Role))
+        return (self.jsonManager.save_to_json(category="employee",id=new_user.get_id(), new_object=new_user) and 
+                self.json_manager.save_to_json(category="schedules", id=new_user.get_id(), new_object=new_user.get_schedules()) and
+                self.json_manager.save_tojson(category="role", id=new_user.get_id(), new_object=new_user.get_role()))
 
 
     def is_valid_PIN(self, PIN):
@@ -182,8 +182,8 @@ class Cadastre():
     def is_valid_schedules(self, scheddules):
         try:
             return (
-            self.is_valid_hourlyload(hourlyLoad=scheddules.hourlyLoad) and 
-            self.is_valid_lunch_time(lunchTime=scheddules.lunchTime)
+            self.is_valid_hourlyload(hourlyLoad=scheddules.get_hourly_load()) and 
+            self.is_valid_lunch_time(lunchTime=scheddules.get_lunch_Time())
             )
         except Exception as e:
             raise ValueError("{e}")
