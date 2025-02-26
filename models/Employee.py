@@ -1,8 +1,17 @@
 from datetime import datetime
 
-from ..controllers import Login
-from ..utils import State, IDGen 
-import Clock, Schedules, Role
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
+from controllers.Login import Login
+
+from utils.State import State
+from utils.IDGen import IDGen 
+
+from Schedules import Schedules
+from Clock import Clock
+from Role import Role
 
 class Employee:
     def __init__(

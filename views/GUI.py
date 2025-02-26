@@ -6,9 +6,12 @@ import os
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
 from utils.JSONManager import JSONManager
 
+from controllers.Login import Login
+
 class GUI:
     def __init__(self):
         self.jsonManager = JSONManager()
+        self.login = Login()
 
         # Janelas
         self.login = None

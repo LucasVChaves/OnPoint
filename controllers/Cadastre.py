@@ -1,8 +1,18 @@
 import re
 from datetime import datetime
+import sys
+import os
 
-from ..models import Employee, Admin, Schedules, Role
-from ..utils import State, JSONManager, IDGen
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
+
+from models.Employee import Employee
+from models.Admin import Admin
+from models.Schedules import Schedules
+from models.Role import Role
+
+from utils.State import State
+from utils.JSONManager import JSONManager
+from utils.IDGen import IDGen
 
 class Cadastre():
 

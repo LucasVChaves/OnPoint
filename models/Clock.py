@@ -1,7 +1,14 @@
 from datetime import datetime, timedelta
+import sys
+import os
 
-import Schedules
-from ..utils import State
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
+
+from controllers.Login import Login
+
+from Schedules import Schedules
+
+from utils.State import State
 
 class Clock():
     def __init__(self):

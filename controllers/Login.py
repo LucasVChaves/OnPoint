@@ -1,11 +1,18 @@
 import smtplib
 import random
 import string
+import sys
+import os
 
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from ..models import Empployee, Admin
-from ..utils import JSONManager
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
+
+from models.Employee import Employee
+from models.Admin import Admin
+
+from utils.JSONManager import JSONManager
 
 
 class Login():
