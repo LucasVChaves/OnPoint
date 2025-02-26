@@ -6,7 +6,6 @@ import os
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
 
 from models.Employee import Employee
-from models.Admin import Admin
 from models.Schedules import Schedules
 from models.Role import Role
 
@@ -47,6 +46,7 @@ class Cadastre():
             return False #usuario invalido
         
         if role == Role.ADMIN:
+            from models.Admin import Admin
             new_user: Admin = Admin(
                                     PIN=PIN, 
                                     name=name, 

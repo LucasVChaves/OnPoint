@@ -4,6 +4,8 @@ import string
 import sys
 import os
 
+from datetime import datetime
+from datetime import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -11,6 +13,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamica
 
 from models.Employee import Employee
 from models.Admin import Admin
+from models.Schedules import Schedules
 
 from utils.JSONManager import JSONManager
 
@@ -22,13 +25,48 @@ class Login():
 
     def action_login(self,id, PIN):
         
-        # Busca o usuário baseado no id
-        user = self.json_manager.load_from_json(category="employee",id=id)
+        if self.json_manager.load_from_json('employee', id)['pin'] == PIN:
 
-        if PIN == user.get_PIN():
-            return True
+            try:
+                user = self.json_manager.load_from_json('employee', id)
+                schedules = self.json_manager.load_from_json('schedules', id)
+            except IndexError as e:
+                print(e)
+
+            if self.json_manager.load_from_json('employee', id)['role'] == 'admin':
+
+                return Admin(PIN=user['pin'],
+                                name=user['name'],
+                                salary=float(user['salary']),
+                                email=user['email'],
+                                birth=datetime.strptime(user['birth'],"%d/%m/%Y"),
+                                phone=user['phone'],
+                                state=user['state'],
+                                schedules=Schedules(datetime.strptime(schedules['time_in'], "%H:%M:%S").time(),
+                                                    datetime.strptime(schedules['hourly_load'], "%H:%M:%S").time(),
+                                                    datetime.strptime(schedules['lunch_time'], "%H:%M:%S").time(),
+                                                    datetime.strptime(schedules['initial_vacation'], "%d/%m/%Y"),
+                                                    datetime.strptime(schedules['finish_vacation'], "%d/%m/%Y")),
+                                role=user['role'])
+            else:
+
+                return Employee(PIN=user['pin'],
+                                name=user['name'],
+                                salary=float(user['salary']),
+                                email=user['email'],
+                                birth=datetime.strptime(user['birth'],"%d/%m/%Y"),
+                                phone=user['phone'],
+                                state=user['state'],
+                                schedules=Schedules(datetime.strptime(schedules['time_in'], "%H:%M:%S").time(),
+                                                    datetime.strptime(schedules['hourly_load'], "%H:%M:%S").time(),
+                                                    datetime.strptime(schedules['lunch_time'], "%H:%M:%S").time(),
+                                                    datetime.strptime(schedules['initial_vacation'], "%d/%m/%Y"),
+                                                    datetime.strptime(schedules['finish_vacation'], "%d/%m/%Y")),
+                                role=user['role'])
+
+
         else:
-            raise ValueError("PIN ERRADA!")
+            raise ValueError("ID ou PIN incorretos")
 
     def forgot_PIN(self, id):
         # Busca o usuário baseado no id
