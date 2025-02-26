@@ -17,6 +17,7 @@ class GUI:
 
     # Frame para cabecalho
     # Add sempre quando for criar outra página
+    # root é a janela, text é o texto do cabeçalho
     def cabecalho(self, root, text):
         # Criando um frame para o cabeçalho
         frame_cabecalho = tk.Frame(root, bg="navy", height=60)
@@ -32,6 +33,8 @@ class GUI:
         btn_sair = tk.Button(frame_botoes, text="❌ Sair", bg="red", fg="white", command=root.quit)
         btn_sair.pack(side="left", padx=5)
 
+    # Função auxiliar para login
+    # id é o ID do funcionário, PIN é o PIN
     def login_aux(self, id, PIN):
         if self.jsonManager.load_from_json('employee', id)['PIN'] == PIN:
             self.login.destroy()
@@ -42,6 +45,7 @@ class GUI:
             label_erro.pack()
             raise ValueError("ID ou PIN incorretos")
 
+    # Função para a página de login
     def login_label(self):
         # Login
         self.login = tk.Tk()
@@ -56,7 +60,7 @@ class GUI:
         frame_formulario = tk.Frame(login, bg="white")
         frame_formulario.pack(pady=50)
 
-        # Agora usamos grid() APENAS dentro do frame_formulario
+        # Campos do formulário
         tk.Label(frame_formulario, text="ID:").grid(row=0, column=0, padx=5, pady=5)
         entrada_ID = tk.Entry(frame_formulario)
         entrada_ID.grid(row=0, column=1, padx=5, pady=5)
@@ -70,6 +74,7 @@ class GUI:
 
         login.mainloop()
 
+    # Função para a página inicial
     def home_label(self):
         self.home = tk.Tk()
         home = self.home
@@ -78,24 +83,5 @@ class GUI:
         home.geometry('650x500')
 
         self.cabecalho(root=home, text="OnPoint")
-        pass
-
-
-
-    # # Criando o cabeçalho
-    # cabecalho = tk.Label(root, text="OnPoint", 
-    #                     font=("Arial", 14, "bold"),  # Fonte grande e negrito
-    #                     bg="blue", fg="white",  # Fundo azul e texto branco
-    #                     padx=10, pady=10)  # Espaçamento interno
-    # cabecalho.pack(fill="x")  # Expande o cabeçalho horizontalmente
-
-    # labelForaTurno = Label(root, text="Fora do turno")
-    # labelEmTurno = Label(root, text="Em turno")
-
-    # labelForaTurno.grid(row=0, column=1)
-    # labelEmTurno.grid(row=0, column=2)
-    
-    # homeBtn = Button(root, text="Home").grid(row=0, column=0)
-    # adminBtn = Button(root, text="Admin").grid(row=1, column=0)
-    # helpBtn = Button(root, text="Help").grid(row=3, column=0)
+        home.mainloop()
 
