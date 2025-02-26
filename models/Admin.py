@@ -1,10 +1,15 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
+
 from Employee import Employee
-from ..controllers import Cadastre
-from ..utils import JSONManager, State
+
+from utils.JSONManager import JSONManager
+from utils.State import State
 
 class Admin(Employee):
     def __init__(self):
-        self.cadastre: Cadastre = Cadastre()
         self.json_manager: JSONManager = JSONManager()
 
     def get_employee(self, id: str):
@@ -24,3 +29,7 @@ class Admin(Employee):
 
     def sync_holydays_callendar(self):
         pass
+
+    def some_function(self):
+        from controllers.Cadastre import Cadastre
+        # ...existing code using Cadastre...

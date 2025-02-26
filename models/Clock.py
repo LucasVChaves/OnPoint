@@ -1,13 +1,18 @@
 from datetime import datetime, timedelta
+import sys
+import os
 
-import Schedules
-from ..utils import State
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
+
+from Schedules import Schedules
+
+from utils.State import State
 
 class Clock():
     def __init__(self):
-        self.entrance_time: datetime = datetime()
+        self.entrance_time: datetime = None
         self.lunch_complete: bool = False
-        self.lunch_start: datetime = datetime()
+        self.lunch_start: datetime = None
 
     # Getter and Setter
     def get_entrance_time(self):

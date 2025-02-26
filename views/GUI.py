@@ -1,14 +1,20 @@
 import tkinter as tk
-from tkinter import ttk
 import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
+
 from utils.JSONManager import JSONManager
+
+from models.Employee import Employee
+from models.Admin import Admin
+
+from controllers.Login import Login
 
 class GUI:
     def __init__(self):
-        self.jsonManager = JSONManager()
+        self.json_manager = JSONManager()
+        self.login_class = Login()
 
         # Janelas
         self.login = None
@@ -18,7 +24,7 @@ class GUI:
     # Frame para cabecalho
     # Add sempre quando for criar outra página
     # root é a janela, text é o texto do cabeçalho
-    def cabecalho(self, root, text):
+    def header(self, root, text):
         # Criando um frame para o cabeçalho
         frame_cabecalho = tk.Frame(root, bg="navy", height=60)
         frame_cabecalho.pack(fill="x")
@@ -36,14 +42,14 @@ class GUI:
     # Função auxiliar para login
     # id é o ID do funcionário, PIN é o PIN
     def login_aux(self, id, PIN):
-        if self.jsonManager.load_from_json('employee', id)['PIN'] == PIN:
-            self.login.destroy()
-            self.home_label()
-
-        else:
+        if not self.login_class.action_login(id, PIN):
             label_erro = tk.Label(self.login, text="ID ou PIN incorretos", fg="red")
             label_erro.pack()
-            raise ValueError("ID ou PIN incorretos")
+        else:
+            # Fecha janela de login
+            self.login.destroy()
+
+            self.home_label(self.login_class.action_login(id, PIN))
 
     # Função para a página de login
     def login_label(self):
@@ -54,7 +60,7 @@ class GUI:
         login.title("Login OnPoint")
         login.geometry('650x500')
 
-        self.cabecalho(root=login, text="Login OnPoint")
+        self.header(root=login, text="Login OnPoint")
 
         # Criando um frame para o formulário
         frame_formulario = tk.Frame(login, bg="white")
@@ -75,13 +81,13 @@ class GUI:
         login.mainloop()
 
     # Função para a página inicial
-    def home_label(self):
+    def home_label(self, user: any):
         self.home = tk.Tk()
         home = self.home
 
         home.title("OnPoint")
         home.geometry('650x500')
 
-        self.cabecalho(root=home, text="OnPoint")
+        self.header(root=home, text="OnPoint")
         home.mainloop()
 

@@ -1,0 +1,18 @@
+[
+    {
+        "id": "1",
+        "time_in": "14:00:00",
+        "hourly_load": "8:00:00",
+        "lunch_time": "1:00:00",
+        "initial_vacation": "25/02/2025",
+        "finish_vacation": "25/02/2025"
+    },
+    {
+        "id": "2",
+        "time_in": "14:00:00",
+        "hourly_load": "8:00:00",
+        "lunch_time": "1:00:00",
+        "initial_vacation": "25/02/2025",
+        "finish_vacation": "25/02/2025"
+    }
+]

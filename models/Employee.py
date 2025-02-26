@@ -1,8 +1,17 @@
 from datetime import datetime
 
-from ..controllers import Login
-from ..utils import State, IDGen 
-import Clock, Schedules, Role
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
+#from controllers.Login import Login
+
+from utils.State import State
+from utils.IDGen import IDGen 
+
+from Schedules import Schedules
+from Clock import Clock
+from Role import Role
 
 class Employee:
     def __init__(
@@ -12,7 +21,8 @@ class Employee:
                 salary: float, 
                 email: str, 
                 birth: datetime, 
-                phone: str, 
+                phone: str,
+                state: State,
                 schedules: Schedules, 
                 role: Role
                 ):
@@ -23,10 +33,10 @@ class Employee:
         self.email: str = email
         self.birth: datetime = birth
         self.phone: str = phone
-        self.state: State = None # Objetc from State
+        self.state: State = state
         self.schedules: Schedules = schedules
         self.clock: Clock = Clock()
-        self.login: Login = Login()
+        #self.login: Login = Login()
         self.role: Role = role
         self.id = IDGen.gen_id(self.PIN)
 
