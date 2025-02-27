@@ -36,9 +36,10 @@ class Admin(Employee):
         return total_worked_hours
 
 
-    def sync_holydays_callendar(self):
-        pass
+    def sync_holydays_callendar(self, id: str, start_date: datetime, end_date: datetime):
+        employee = Employee(**self.json_manager.load_from_json('employee', id))
+        schedule = employee.get_schedules()
 
-    def some_function(self):
-        from controllers.Cadastre import Cadastre
-        # ...existing code using Cadastre...
+        schedule.set_initial_vacation = start_date
+        schedule.set_finish_vacation = end_date
+        pass
