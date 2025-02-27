@@ -5,7 +5,6 @@ import os
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
 
 from Schedules import Schedules
-from Employee import Employee
 from utils.JSONManager import JSONManager
 from utils.State import State
 
@@ -37,6 +36,7 @@ class Clock():
 
         
     def action_clock(self, employee_id: str, state: State):
+        from Employee import Employee
         now = datetime.now() 
         employee = Employee(**self.json_manager('employee', employee_id))
         schedule = employee.get_schedules()
