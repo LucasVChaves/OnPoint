@@ -29,14 +29,14 @@ class HomeGUI:
     # root é a janela, text é o texto do cabeçalho
     def header(self, root, text):
         # Criando um frame para o cabeçalho
-        frame_cabecalho = tk.Frame(root, bg="navy", height=60)
+        frame_cabecalho = tk.Frame(root, bg="#1e1e1e", height=60)
         frame_cabecalho.grid(row=0, column=0, columnspan=2, sticky="ew")
 
         label_titulo = tk.Label(frame_cabecalho, text=text,
-                                font=("Arial", 16, "bold"), bg="navy", fg="white")
+                                font=("Arial", 16, "bold"), bg="#1e1e1e", fg="white")
         label_titulo.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-        frame_botoes = tk.Frame(frame_cabecalho, bg="navy")
+        frame_botoes = tk.Frame(frame_cabecalho, bg="#1e1e1e")
         frame_botoes.grid(row=0, column=1, padx=10, sticky="e")
 
         btn_sair = tk.Button(frame_botoes, text="❌ Sair", bg="red", fg="white", command=root.quit)
