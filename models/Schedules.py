@@ -2,16 +2,21 @@ from datetime import datetime
 
 class Schedules:
     def __init__(self, 
-                 time_in: datetime.time, 
-                 hourly_load: datetime.time, 
-                 lunch_time: datetime.time, 
-                 initial_vacation: datetime, 
-                 finish_vacation: datetime):
+                    time_in: datetime.time, 
+                    hourly_load: datetime.time, 
+                    lunch_time: datetime.time, 
+                    initial_vacation: datetime, 
+                    finish_vacation: datetime,
+                    clock_ins: list[datetime.time], # horario que bateu ponto para entrar
+                    clock_outs: list[datetime.time] # horario que bateu pinto pra sair
+                    ):
         self.time_in: datetime = time_in
         self.hourly_load: datetime = hourly_load
         self.lunch_time: datetime = lunch_time
         self.initial_vacation: datetime = initial_vacation
         self.finish_vacation: datetime = finish_vacation
+        self.clock_ins: list[datetime.time] = clock_ins
+        self.clock_outs: list[datetime.time] = clock_outs
 
     # getter and setters
     def get_time_in(self):
@@ -44,3 +49,16 @@ class Schedules:
     def set_finish_vacation(self, finish_vacation):
         self.finish_vacation = finish_vacation
 
+    # retorna List!
+    def get_clock_ins(self):
+        return self.clock_ins
+    
+    def append_clock_ins(self, curr_time: datetime.time):
+        self.clock_ins.append(curr_time)
+
+    # retorna List!
+    def get_clock_out(self):
+        return self.clock_outs
+    
+    def append_clock_outs(self, curr_time: datetime.time):
+        self.clock_outs.append(curr_time)

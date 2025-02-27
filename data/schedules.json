@@ -5,7 +5,9 @@
         "hourly_load": "8:00:00",
         "lunch_time": "1:00:00",
         "initial_vacation": "25/02/2025",
-        "finish_vacation": "25/02/2025"
+        "finish_vacation": "25/02/2025",
+        "clock_ins": [],
+        "clock_outs": []
     },
     {
         "id": "2",
@@ -13,6 +15,8 @@
         "hourly_load": "8:00:00",
         "lunch_time": "1:00:00",
         "initial_vacation": "25/02/2025",
-        "finish_vacation": "25/02/2025"
+        "finish_vacation": "25/02/2025",
+        "clock_ins": [],
+        "clock_outs": []
     }
 ]
