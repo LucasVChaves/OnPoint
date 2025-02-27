@@ -12,7 +12,8 @@ from models.Admin import Admin
 
 from controllers.Login import Login
 
-class LoginGUI(GUI):
+
+class LoginGUI():
     def __init__(self):
         self.json_manager = JSONManager()
         self.login_class = Login()
