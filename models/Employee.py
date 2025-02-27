@@ -36,7 +36,6 @@ class Employee:
         self.state: State = state
         self.schedules: Schedules = schedules
         self.clock: Clock = Clock()
-        #self.login: Login = Login()
         self.role: Role = role
         self.id = IDGen.gen_id(self.PIN)
 

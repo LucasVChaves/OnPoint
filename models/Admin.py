@@ -51,4 +51,3 @@ class Admin(Employee):
 
         schedule.set_initial_vacation = start_date
         schedule.set_finish_vacation = end_date
-        pass
