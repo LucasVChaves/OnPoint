@@ -16,9 +16,18 @@ class Admin(Employee):
     def set_employee(self, employee):
         self.json_manager.save_to_json('employee', employee.get_id(), employee)
 
-    # frequencia em % (100% do mes = 22 dias uteis)
-    def fix_monthly_frequency(self, id: str, new_frequency: float):
-        pass
+    # adiciona correction dias ao clock out, ou seja funcionario faltou 3 dias com atestado
+    # e o adm faz a correcao, eh adicionado 3 novos clock_outs pro historico
+    # arrumando a frequencia tanto pro json em si quanto pro generate_monthly_worked_hours
+    def fix_monthly_frequency(self, id: str, correction: int):
+        if correction <= 0:
+            raise ValueError(f"Correction has to be > 0, invalid val {correction}")
+        
+        employee = Employee(**self.json_manager.load_from_json('employee', id))
+        schedule = employee.get_schedules()
+        # range: [0, n) entao eh preciso + 1
+        for _ in range(correction + 1):
+            schedule.append_clock_outs(schedule.get_time_in())
 
     def generate_monthly_worked_hours(self, id: str):
         employee = Employee(**self.json_manager.load_from_json('employee', id))
