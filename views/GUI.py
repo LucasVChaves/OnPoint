@@ -63,6 +63,9 @@ class GUI:
         emTurnoLabel = Label(frame, text="Em turno")
         
         # Criando as Listbox
+        #TODO:  fazer as listboxes serem listas de botoes
+        #cada botao vai ter o nome do funcionario/admin
+        #a ação do click do botao roda a tela de login
         foraTurnoListbox = Listbox(frame)
         emTurnoListbox = Listbox(frame)
 
