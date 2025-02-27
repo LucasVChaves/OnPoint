@@ -13,10 +13,11 @@ from models.Admin import Admin
 from controllers.Login import Login
 
 
-class LoginGUI():
+class LoginGUI:
     def __init__(self):
         self.json_manager = JSONManager()
         self.login_class = Login()
+        
     # Função auxiliar para login
     # id é o ID do funcionário, PIN é o PIN
     def login_aux(self, id, PIN):
