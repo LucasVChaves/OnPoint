@@ -13,7 +13,7 @@ from models.Admin import Admin
 
 from controllers.Login import Login
 
-class GUI:
+class HomeGUI:
     def __init__(self):
         self.home = None
 
@@ -50,17 +50,26 @@ class GUI:
 
         home.title("OnPoint")
 
+        scale_factor = 0.6
+        screen_h = int(home.winfo_screenheight() * scale_factor)
+        screen_w = int(home.winfo_screenwidth() * scale_factor)
+
+        home.geometry(f"{screen_w}x{screen_h}")
+        home.grid_rowconfigure(0, weight=1)
+        home.grid_columnconfigure(0, weight=1)
+        home.grid_columnconfigure(0, weight=1)
 
         # Adicionando um frame principal
-        frame = Frame(home)
+        frame = Frame(home, borderwidth=10)
+        frame.pack(expand=True, fill="both")
         frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
         # Chamando o cabeçalho e colocando-o acima das Listbox
         self.header(root=home, text="OnPoint")
 
         # Criando as Labels
-        foraTurnoLabel = Label(frame, text="Fora de Turno")
-        emTurnoLabel = Label(frame, text="Em turno")
+        foraTurnoLabel = Label(frame, text="Fora de Turno", background='#ff5757')
+        emTurnoLabel = Label(frame, text="Em turno", background='#00bf63')
         
         # Criando as Listbox
         #TODO:  fazer as listboxes serem listas de botoes
@@ -70,8 +79,8 @@ class GUI:
         emTurnoListbox = Listbox(frame)
 
         # Exibindo as Labels
-        foraTurnoLabel.grid(row=0, column=0, padx=10, pady=10, sticky="w")
-        emTurnoLabel.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+        foraTurnoLabel.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+        emTurnoLabel.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
         # Exibindo as Listboxes
         foraTurnoListbox.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
