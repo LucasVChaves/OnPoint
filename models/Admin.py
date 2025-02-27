@@ -1,12 +1,10 @@
 import sys
 import os
+from Employee import Employee
+from utils.JSONManager import JSONManager
+from datetime import datetime, timedelta
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
-
-from Employee import Employee
-
-from utils.JSONManager import JSONManager
-from utils.State import State
 
 class Admin(Employee):
     def __init__(self):
@@ -22,10 +20,21 @@ class Admin(Employee):
     def fix_monthly_frequency(self, id: str, new_frequency: float):
         pass
 
-    # vai iterar pelo clocks.json somando todas
-    # as horas trabalhadas no mes corrente
-    def generate_monthly_worked_hours_report(self, id: str):
-        pass
+    def generate_monthly_worked_hours(self, id: str):
+        employee = Employee(**self.json_manager.load_from_json('employee', id))
+        schedule = employee.get_schedules()
+
+        total_worked_hours = 0
+        clock_outs = schedule.get_clock_outs()
+        clock_ins = schedule.get_clock_ins()
+        # usa o clock_outs como base pois eh possivel que
+        # clock_ins.len > clock_outs.len se ainda estiver em turno
+        for i in clock_outs:
+            worked_hours = datetime.strptime(clock_outs[i], "%H:%M:%S") - datetime.strptime(clock_ins[i], "%H:%M:%S")
+            total_worked_hours += worked_hours
+        
+        return total_worked_hours
+
 
     def sync_holydays_callendar(self):
         pass
