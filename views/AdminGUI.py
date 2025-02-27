@@ -55,9 +55,21 @@ class AdminGUI:
         administradores = Listbox(frame)
         administradores.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
-        # Inicia o loop principal
+    admins = self.get_admins()  # Método fictício que deve retornar uma lista de administradores
+    for admin in admins:
+        administradores.insert(tk.END, admin['name'])
+
+    # Inicia o loop principal
         admin.mainloop()
 
+    def get_admins(self):
+    # Recupera a lista de administradores (exemplo usando JSON)
+        json_manager = JSONManager()
+        admins_data = json_manager.load_from_json('admin', '')  # Supondo que 'admin' seja o nome da categoria no JSON
+        return admins_data
+        '''admins_data = self.json_manager.load_from_json('admin')  # Supondo que os administradores estão no arquivo JSON 'admin'
+        admins = [Admin(**data) for data in admins_data]  # Cria instâncias de Admin com os dados carregados
+        return admins'''
 
     def admin_interface(self):
         self.interf = tk.Tk()
@@ -86,8 +98,26 @@ class AdminGUI:
         frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")  # Ocupa a linha 1
 
         # Configura o frame para ser expansível
-        frame.grid_rowconfigure(0, weight=1)
-        frame.grid_columnconfigure(0, weight=1)
+        frame.grid_rowconfigure(0, weight=0)  # Linha para o título "Lista de Funcionários"
+        frame.grid_rowconfigure(1, weight=1)  # Linha para a Listbox expansível
+        frame.grid_columnconfigure(0, weight=1)  #
+
+        empLista = Label(frame, text="Lista de Funcionários")
+        empLista.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+
+        # Cria o Listbox
+        employees = Listbox(frame)
+        employees.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
+        # Recupera os funcionários do sistema e adiciona ao Listbox
+        employee_list = self.get_employees()  # Método para listar funcionários
+        for emp in employee_list:
+            employees.insert(tk.END, emp['name'])  # Supondo que cada employee tenha um atributo 'name'
 
         # Inicia o loop principal
         interf.mainloop()
+    def get_employees(self):
+    # Recupera os funcionários do JSON usando JSONManager
+        json_manager = JSONManager()
+        employees_data = json_manager.load_from_json('employee', '')  # Supondo que 'employee' seja o nome da categoria no JSON
+        return employees_data  # A função agora retorna a lista de funcionários
