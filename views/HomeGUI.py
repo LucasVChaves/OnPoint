@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import Listbox, Label, Frame
 import sys
 import os
+from datetime import datetime
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
 
@@ -41,7 +42,26 @@ class HomeGUI:
         btn_sair = tk.Button(frame_botoes, text="❌ Sair", bg="red", fg="white", command=root.quit)
         btn_sair.grid(row=0, column=0, padx=5)
 
+    def update_clock(self, label):
+        curr_time = datetime.now().strftime("%H:%M:%S")
+        label.config(text=curr_time)
+        label.after(1000, self.update_clock, label)
 
+    def clock(self, root):
+        frame_clock = tk.Frame(root, height=150)
+        frame_clock.grid(row=1, column=0, sticky="ew")
+        frame_clock.grid_propagate(False)
+
+        label_clock = tk.Label(frame_clock, text='clock', font=("Arial", 20, "bold"))
+        label_clock.grid(row=0, column=0, sticky="ew")
+        self.update_clock(label_clock)
+        frame_clock.grid_rowconfigure(0, weight=1)
+        frame_clock.grid_columnconfigure(0, weight=1)
+
+        today = datetime.now().strftime("%d/%m/%Y - %A")
+        label_date = tk.Label(frame_clock, text=today, font=("Arial", 15, "italic"))
+        label_date.grid(row=1, column=0, sticky="ew")
+        frame_clock.grid_rowconfigure(1, weight=1)
 
     # Função para a página inicial
     def home_label(self):
@@ -55,17 +75,21 @@ class HomeGUI:
         screen_w = int(home.winfo_screenwidth() * scale_factor)
 
         home.geometry(f"{screen_w}x{screen_h}")
-        home.grid_rowconfigure(0, weight=1)
-        home.grid_columnconfigure(0, weight=1)
+        home.grid_rowconfigure(0, weight=2)
+        home.grid_rowconfigure(1, weight=1)
+        home.grid_rowconfigure(2, weight=2)
         home.grid_columnconfigure(0, weight=1)
 
         # Adicionando um frame principal
         frame = Frame(home, borderwidth=10)
         frame.pack(expand=True, fill="both")
-        frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
         # Chamando o cabeçalho e colocando-o acima das Listbox
         self.header(root=home, text="OnPoint")
+
+        # Chama label do relogio
+        self.clock(root=home)
 
         # Criando as Labels
         foraTurnoLabel = Label(frame, text="Fora de Turno", background='#ff5757')
