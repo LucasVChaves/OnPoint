@@ -1,0 +1,24 @@
+[
+    {
+        "id": "1",
+        "pin": "1232",
+        "name": "Testinho",
+        "salary": "1000",
+        "email": "teste@gmail.com",
+        "birth": "01/01/1990",
+        "phone": "999999999",
+        "state": "Initial",
+        "role": "Admin"
+    },
+    {
+        "id": "2",
+        "pin": "1234",
+        "name": "Testinho Jr",
+        "salary": "1000",
+        "email": "testeJr@gmail.com",
+        "birth": "01/01/1990",
+        "phone": "999999999",
+        "state": "Initial",
+        "role": "Employee"
+    }
+]
