@@ -4,7 +4,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
 
-from Schedules import Schedules
+from models.Schedules import Schedules
 from utils.JSONManager import JSONManager
 from utils.State import State
 
@@ -34,74 +34,106 @@ class Clock():
     def set_lunch_start(self, lunch_start):
         self.lunch_start = lunch_start
 
-        
     def action_clock(self, employee_id: str, state: State):
-        from Employee import Employee
-        now = datetime.now() 
-        employee = Employee(**self.json_manager('employee', employee_id))
-        schedule = employee.get_schedules()
-        high_limit = schedule.time_in - timedelta(minutes=15)
-        low_limit = schedule.time_in + timedelta(minutes=15)
+        now = datetime.now()
+        print(f"[DEBUG] ID recebido para bater ponto: {employee_id}")
+
+        # Buscar funcionário pelo ID correto
+        all_employees = self.json_manager.load_all_from_json("employee")
+        employee_data = next((emp for emp in all_employees if str(emp["id"]) == str(employee_id)), None)
+
+        if not employee_data:
+            raise ValueError(f"Funcionário com ID {employee_id} não encontrado.")
+
+        # Certificando-se de que employee_id está correto
+        employee_id = employee_data["id"]  # Garantindo que estamos utilizando o ID correto do funcionário
+
+        # Buscar horário do funcionário pelo ID correto
+        all_schedules = self.json_manager.load_all_from_json("schedules")
+        schedule_data = next((sch for sch in all_schedules if str(sch["id"]) == str(employee_id)), None)
+
+        if not schedule_data:
+            raise ValueError(f"Horário para o funcionário {employee_data['name']} ({employee_id}) não encontrado.")
+
+        # Extraindo os horários do JSON
+        time_in = datetime.strptime(schedule_data["time_in"], "%H:%M:%S").time()
+        hourly_load = datetime.strptime(schedule_data["hourly_load"], "%H:%M:%S").time()
+        lunch_time = datetime.strptime(schedule_data["lunch_time"], "%H:%M:%S").time()
+
+        high_limit = datetime.combine(datetime.today(), time_in) - timedelta(minutes=15)
+        low_limit = datetime.combine(datetime.today(), time_in) + timedelta(minutes=15)
 
         # Validando Entrada
         match state:
-            # Fora de serviço -> Trabalhando
             case State.OUT_WORK:
-                # Verifica se está entrando no horário certo
-                #TODO Falta completar o "else"
-
-                # adiciona o tempo atual na lista de clock ins
-                schedule.append_clock_ins(now)
-                if now <= high_limit or now >= low_limit:
-                    
-                    return True
-                else:
+                if not (high_limit <= now <= low_limit):
                     raise ValueError("Entrando fora do horário proposto!")
-            # Trabalhando -> Fora de serviço
+
+                schedule_data["clock_ins"].append(now.strftime("%H:%M:%S"))
+                self.json_manager.save_to_json("schedules", employee_id, schedule_data)
+                return True
+
             case State.WORKING:
-                # adiciona o tempo atual na lista de clock outs
-                schedule.append_clock_outs(now)
+                schedule_data["clock_outs"].append(now.strftime("%H:%M:%S"))
+
                 if self.lunch_complete:
-                    if now == self.entrance_time + schedule.hourly_time + schedule.lunch_time:
-                        self.entrance_time = 0
-                        self.lunch_start = 0
+                    expected_exit_time = self.entrance_time + timedelta(
+                        hours=hourly_load.hour, 
+                        minutes=hourly_load.minute
+                    ) + timedelta(hours=lunch_time.hour)
+
+                    if now == expected_exit_time:
+                        self.entrance_time = None
+                        self.lunch_start = None
                         self.lunch_complete = False
+                        self.json_manager.save_to_json("schedules", employee_id, schedule_data)
                         return True
-                    elif now > self.entrance_time + schedule.hourly_time + schedule.lunch_time:
+                    elif now > expected_exit_time:
                         raise ValueError("Saindo mais tarde")
                     else:
                         raise ValueError("Saindo mais cedo")
                 else:
-                    raise ValueError("Num almoçou pq?")
-            case _:
-                raise ValueError("Estado errado lek")
+                    raise ValueError("Almoço não completo!")
 
-    def action_lunch(self, schedules: Schedules, state: State):
+            case _:
+                raise ValueError("Estado inválido")
+
+    def action_lunch(self, employee_id: str, state: State):
+        now = datetime.now()
+        
+        # Buscar horário do funcionário pelo ID correto
+        all_schedules = self.json_manager.load_all_from_json("schedules")
+        schedule_data = next((sch for sch in all_schedules if str(sch["id"]) == str(employee_id)), None)
+
+        if not schedule_data:
+            raise ValueError(f"Horário do funcionário com ID {employee_id} não encontrado.")
+
+        lunch_time = datetime.strptime(schedule_data["lunch_time"], "%H:%M:%S").time()
 
         # Validando
         match state:
-            # Trabalhando -> Almoçando
             case State.WORKING:
-                if self.lunch_start == 0:
+                if not self.lunch_start:
                     if not self.lunch_complete:
-                        self.lunch_start = datetime.now()
-                        state = State.LUNCH
+                        self.lunch_start = now
                         return True
                     else:
-                        raise ValueError("Hora de almoço já foi completa")
+                        raise ValueError("Hora de almoço já foi completada.")
                 else:
-                    raise ValueError("Horaário de almoço já foi iniciado")
-            # Almoçando -> Trabalhando 
+                    raise ValueError("Horário de almoço já foi iniciado.")
+
             case State.LUNCH:
-                # Não sei se isso está certo
-                if datetime.now() - self.lunch_start == schedules.lunch_time:
+                lunch_duration = now - self.lunch_start
+                expected_lunch_time = timedelta(hours=lunch_time.hour, minutes=lunch_time.minute)
+
+                if lunch_duration >= expected_lunch_time:
                     self.lunch_complete = True
-                    state = State.WORKING
                     return True
                 else:
-                    raise ("Hora de almoço incompleto")
-            case _ :
-                raise ValueError("Estado errado")
+                    raise ValueError("Hora de almoço incompleta.")
+
+            case _:
+                raise ValueError("Estado inválido")
 
     def justified_clock(self):
         pass

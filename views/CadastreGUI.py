@@ -2,11 +2,17 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from datetime import datetime
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
+
 from models.Employee import Employee
 from models.Schedules import Schedules
 from models.Role import Role
 from utils.JSONManager import JSONManager
 from utils.IDGen import IDGen
+from controllers.Cadastre import Cadastre  # Corrigindo importação
 
 from views.HomeGUI import HomeGUI
 
@@ -63,10 +69,8 @@ class CadastreGUI:
         self.lbl_role = Label(self.master, text="Cargo")
         self.lbl_role.grid(row=8, column=0, padx=10, pady=10)
 
-        vlist = ["ADMIN", "EMPLOYEE"]
-
-        combo = ttk.Combobox(self.master, values = vlist)
-        combo.grid(row=8, column=1, padx=10, pady=10)
+        self.combo = ttk.Combobox(self.master, values=["ADMIN", "EMPLOYEE"])  # Criando um combobox para cargos
+        self.combo.grid(row=8, column=1, padx=10, pady=10)
         
         # Botão de Cadastro
         self.btn_register = Button(self.master, text="Cadastrar", command=self.register_user)
@@ -80,7 +84,7 @@ class CadastreGUI:
         address = self.ent_address.get()
         birth = self.ent_birth.get()
         salary = self.ent_salary.get()
-        role = self.ent_role.get()
+        role = self.combo.get()  # Pegando o valor correto do combobox
 
         # Convertendo a data de nascimento e o salário
         try:
@@ -90,7 +94,16 @@ class CadastreGUI:
             messagebox.showerror("Erro", f"Erro ao converter dados: {e}")
             return
         
-        schedules = Schedules()  # Supondo que Schedules seja configurado de outra maneira
+        # Criando horários padrão para um novo usuário
+        schedules = Schedules(
+            time_in=datetime.strptime("08:00:00", "%H:%M:%S").time(),
+            hourly_load=datetime.strptime("08:00:00", "%H:%M:%S").time(),
+            lunch_time=datetime.strptime("01:00:00", "%H:%M:%S").time(),
+            initial_vacation=birth,  # Apenas para evitar erro, ajustar posteriormente se necessário
+            finish_vacation=birth,
+            clock_ins=[],
+            clock_outs=[]
+        )
         
         role = Role.ADMIN if role.upper() == "ADMIN" else Role.EMPLOYEE
         
@@ -100,8 +113,3 @@ class CadastreGUI:
             messagebox.showinfo("Sucesso", "Usuário cadastrado com sucesso!")
         else:
             messagebox.showerror("Erro", "Erro ao cadastrar usuário!")
-
-'''if __name__ == "__main__":
-    root = tk.Tk()
-    app = CadastreGUI(master=root)
-    root.mainloop()'''

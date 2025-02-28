@@ -4,7 +4,6 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))  # Adiciona dinamicamente
-#from controllers.Login import Login
 
 from utils.State import State
 from utils.IDGen import IDGen 
@@ -16,6 +15,7 @@ from Role import Role
 class Employee:
     def __init__(
                 self, 
+                ID: str,   # Mudança para garantir que o ID correto seja passado
                 PIN: str, 
                 name: str, 
                 salary: float, 
@@ -27,6 +27,7 @@ class Employee:
                 role: Role
                 ):
         
+        self.id: str = ID  # Usa o ID do JSON e não o gerado
         self.PIN: str = PIN
         self.name: str = name
         self.salary: float = salary
@@ -37,9 +38,14 @@ class Employee:
         self.schedules: Schedules = schedules
         self.clock: Clock = Clock()
         self.role: Role = role
-        self.id = IDGen.gen_id(self.PIN)
 
-    # getter and setters
+    # Getters e Setters
+    def get_id(self):
+        return self.id
+    
+    def set_id(self, id):
+        self.id = id
+
     def get_PIN(self):
         return self.PIN
     
@@ -87,21 +93,3 @@ class Employee:
     
     def set_schedules(self, schedules):
         self.schedules = schedules
-
-    def get_id(self):
-        return self.id
-    
-    def set_id(self, id):
-        self.id = id
-
-    # def get_clock(self):
-    #     return self.clock
-    
-    # def set_clock(self, clock):
-    #     self.clock = clock
-
-    # def get_login(self):
-    #     return self.login
-    
-    # def set_login(self, login):
-    #     self.login = login
