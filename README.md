@@ -6,6 +6,16 @@ Trabalho da Disciplina de Modelagem de Sistemas (DCC117)
 
 É um sistema de ponto eletrônico para controle de horas trabalhadas e frequência de funcionários.
 
+## Executando
+
+Para executar o sistema, basta rodar o arquivo `main.py`:
+
+```bash
+git clone https://github.com/LucasVChaves/OnPoint.git
+cd OnPoint
+python main.py
+```
+
 ## Stack
 
 - Python 3.8
@@ -47,14 +57,6 @@ Trabalho da Disciplina de Modelagem de Sistemas (DCC117)
 
 > Toda vez que for trabalhar no projeto, ative o ambiente virtual com `source venv/bin/activate`.
 > Se começar a usar uma outra biblioteca atualiza o `requirements.txt`.
-
-## Executando
-
-Para executar o sistema, basta rodar o arquivo `main.py`:
-
-```bash
-python main.py
-```
 
 ## Estrutura de Pastas
 
