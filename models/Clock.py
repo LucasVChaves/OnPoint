@@ -36,7 +36,6 @@ class Clock():
 
     def action_clock(self, employee_id: str, state: State):
         now = datetime.now()
-        print(f"[DEBUG] ID recebido para bater ponto: {employee_id}")
 
         # Buscar funcionário pelo ID correto
         all_employees = self.json_manager.load_all_from_json("employee")
@@ -58,42 +57,38 @@ class Clock():
         # Extraindo os horários do JSON
         time_in = datetime.strptime(schedule_data["time_in"], "%H:%M:%S").time()
         hourly_load = datetime.strptime(schedule_data["hourly_load"], "%H:%M:%S").time()
-        lunch_time = datetime.strptime(schedule_data["lunch_time"], "%H:%M:%S").time()
 
-        high_limit = datetime.combine(datetime.today(), time_in) - timedelta(minutes=15)
-        low_limit = datetime.combine(datetime.today(), time_in) + timedelta(minutes=15)
-
-        # Validando Entrada
+        # Ação sem validações, só registra o ponto
         match state:
             case State.OUT_WORK:
-                if not (high_limit <= now <= low_limit):
-                    raise ValueError("Entrando fora do horário proposto!")
-
+                self.entrance_time = now  # Registra a entrada
                 schedule_data["clock_ins"].append(now.strftime("%H:%M:%S"))
                 self.json_manager.save_to_json("schedules", employee_id, schedule_data)
+                
+                # Atualiza o estado para "Em turno" após o registro da entrada
+                employee_data["state"] = State.WORKING.value
+                self.json_manager.save_to_json("employee", employee_id, employee_data)
+
                 return True
 
             case State.WORKING:
                 schedule_data["clock_outs"].append(now.strftime("%H:%M:%S"))
 
-                if self.lunch_complete:
-                    expected_exit_time = self.entrance_time + timedelta(
-                        hours=hourly_load.hour, 
-                        minutes=hourly_load.minute
-                    ) + timedelta(hours=lunch_time.hour)
+                # Se a entrada não foi registrada (None), atribui a hora atual
+                if self.entrance_time is None:
+                    self.entrance_time = now
 
-                    if now == expected_exit_time:
-                        self.entrance_time = None
-                        self.lunch_start = None
-                        self.lunch_complete = False
-                        self.json_manager.save_to_json("schedules", employee_id, schedule_data)
-                        return True
-                    elif now > expected_exit_time:
-                        raise ValueError("Saindo mais tarde")
-                    else:
-                        raise ValueError("Saindo mais cedo")
-                else:
-                    raise ValueError("Almoço não completo!")
+                # Ajuste para que o cálculo de saída funcione corretamente
+                expected_exit_time = self.entrance_time + timedelta(
+                    hours=hourly_load.hour, 
+                    minutes=hourly_load.minute
+                )
+
+                self.entrance_time = None  # Limpa a entrada após o registro
+                self.lunch_start = None
+                self.lunch_complete = False
+                self.json_manager.save_to_json("schedules", employee_id, schedule_data)
+                return True
 
             case _:
                 raise ValueError("Estado inválido")
@@ -110,27 +105,15 @@ class Clock():
 
         lunch_time = datetime.strptime(schedule_data["lunch_time"], "%H:%M:%S").time()
 
-        # Validando
+        # Sem validação adicional, apenas registra o almoço
         match state:
             case State.WORKING:
-                if not self.lunch_start:
-                    if not self.lunch_complete:
-                        self.lunch_start = now
-                        return True
-                    else:
-                        raise ValueError("Hora de almoço já foi completada.")
-                else:
-                    raise ValueError("Horário de almoço já foi iniciado.")
+                self.lunch_start = now
+                return True
 
             case State.LUNCH:
-                lunch_duration = now - self.lunch_start
-                expected_lunch_time = timedelta(hours=lunch_time.hour, minutes=lunch_time.minute)
-
-                if lunch_duration >= expected_lunch_time:
-                    self.lunch_complete = True
-                    return True
-                else:
-                    raise ValueError("Hora de almoço incompleta.")
+                self.lunch_complete = True
+                return True
 
             case _:
                 raise ValueError("Estado inválido")

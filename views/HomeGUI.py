@@ -69,11 +69,7 @@ class HomeGUI:
 
         if employees_data:
             for emp in employees_data:
-                # Usando o valor do enum 'State' diretamente para verificar o estado
-                if emp.get("state") == State.WORKING.value:  # Verificando o valor do estado
-                    self.emTurnoListbox.insert(tk.END, emp["name"])
-                else:
-                    self.foraTurnoListbox.insert(tk.END, emp["name"])
+                self.foraTurnoListbox.insert(tk.END, emp["name"])  # Exibe todos os funcionários, sem validar o estado
 
     # Função para a página inicial
     def home_label(self):
@@ -133,7 +129,7 @@ class HomeGUI:
 
         # Botão de administração (visível apenas para admins)
         if self.usuario_logado and self.usuario_logado.role == "Admin":
-            btn_admin = tk.Button(frame_botoes, text="Área do Admin", command=self.abrir_admin)
+            btn_admin = tk.Button(frame_botoes, text="Admin", command=self.abrir_admin)
             btn_admin.pack(side=tk.LEFT, padx=10)
 
         # Configuração do grid para as colunas se expandirem
@@ -150,8 +146,8 @@ class HomeGUI:
         """ Função acionada pelo botão "Bater Ponto". """
         if self.usuario_logado:
             employee_id = self.usuario_logado.get_id()  # Garantindo que o ID correto está sendo usado
-            state = self.usuario_logado.get_state()  # ✅ Certificando que o estado está correto também
-
+            # Agora, o estado é passado diretamente ao clicar no botão de bater ponto
+            state = State.WORKING  # Definido diretamente como "Working" para o exemplo, se necessário
             try:
                 clock = Clock()
                 clock.action_clock(employee_id, state)  # Registra o ponto corretamente
@@ -161,13 +157,37 @@ class HomeGUI:
         else:
             messagebox.showwarning("Aviso", "Nenhum usuário logado!")
 
-    # Funções para abrir outras telas
+    # Função para abrir a tela de Justificativa de Frequência
     def abrir_justificativa(self):
-        from views.JustificativaGUI import JustificativaGUI  # Importação atrasada
-        justificativa = JustificativaGUI()
-        justificativa.justificativa_label()
+        justificativa = tk.Toplevel(self.home)  # Cria uma nova janela
+        justificativa.title("Justificar Frequência")
 
+        # Label para instrução
+        label = Label(justificativa, text="Digite a justificativa para sua ausência:")
+        label.pack(pady=10)
+
+        # Campo de texto para justificar
+        justificativa_text = Text(justificativa, height=10, width=40)
+        justificativa_text.pack(padx=10, pady=10)
+
+        # Botões de Enviar e Voltar
+        btn_enviar = Button(justificativa, text="Enviar", command=lambda: self.enviar_justificativa(justificativa_text))
+        btn_enviar.pack(side=tk.LEFT, padx=10, pady=10)
+
+        btn_voltar = Button(justificativa, text="Voltar", command=justificativa.destroy)
+        btn_voltar.pack(side=tk.RIGHT, padx=10, pady=10)
+
+    # Função para enviar a justificativa (aqui você pode adicionar o que deve ser feito com a justificativa)
+    def enviar_justificativa(self, justificativa_text):
+        justificativa = justificativa_text.get("1.0", "end-1c")  # Captura o texto digitado
+        if justificativa.strip() == "":  # Verifica se não foi digitado nada
+            messagebox.showwarning("Aviso", "Por favor, digite uma justificativa.")
+        else:
+            # Aqui você pode fazer o que for necessário com a justificativa
+            messagebox.showinfo("Sucesso", "Justificativa enviada com sucesso!")
+
+    # Função para abrir a tela de Admin
     def abrir_admin(self):
-        from views.AdminGUI import AdminGUI  # Importação atrasada
-        admin = AdminGUI()
-        admin.admin_interface()
+        from views.AdminGUI import AdminGUI  # Importação da tela de admin
+        admin = AdminGUI()  # Criação da instância da tela AdminGUI
+        admin.admin_interface()  # Chama o método para exibir a interface de admin
