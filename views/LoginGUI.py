@@ -61,7 +61,7 @@ class LoginGUI:
 
         # Botão de Login
         botao = tk.Button(frame_formulario, text="Enviar", 
-                          command=lambda: self.login_aux(entrada_ID.get(), entrada_PIN.get()))
+                            command=lambda: self.login_aux(entrada_ID.get(), entrada_PIN.get()))
         botao.grid(row=2, columnspan=2, pady=10)
 
         login.mainloop()
